@@ -72,6 +72,7 @@ geojson_str = json.dumps(geojson_geom)
 map_var = m.get_name()
 turf_js = f"""
 (function() {{
+    var gameOver = false;
     var turfScript = document.createElement('script');
     turfScript.src = 'https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js';
     turfScript.onload = function() {{
@@ -85,7 +86,9 @@ turf_js = f"""
 
         {map_var}.whenReady(function() {{
             {map_var}.on('click', function(e) {{
-                guessCount += 1;
+                if(gameOver === false){{
+                    guessCount += 1;
+                }}
                 var pt = turf.point([e.latlng.lng, e.latlng.lat]);
                 let shape;
 
@@ -100,6 +103,7 @@ turf_js = f"""
                 let inside = shape ? turf.booleanPointInPolygon(pt, shape) : false;
 
                 if (inside) {{
+                    gameOver = true;
                     updateBanner("You cheated | Guesses: " + guessCount);
                     if (!countryLayer) {{
                         countryLayer = L.geoJSON(countryGeoJSON, {{
@@ -107,7 +111,9 @@ turf_js = f"""
                         }}).addTo({map_var});
                     }}
                 }} else {{
-                    updateBanner("Find: {selected_name} | Ha bad | Guesses: " + guessCount);
+                    if(gameOver === false){{
+                        updateBanner("Find: {selected_name} | Ha bad | Guesses: " + guessCount);
+                    }}
                 }}
             }});
         }});
@@ -122,13 +128,5 @@ from streamlit.components.v1 import html as st_html
 html_string = m.get_root().render()
 html_string = html_string.encode('utf-8', 'replace').decode('utf-8')
 #st_html(html_string, height=700, scrolling=True)
+st_html(m.get_root().render(), height=900, scrolling=True)
 
-st_html(m.get_root().render(), height=700, scrolling=True)
-
-# Create the final HTML or string that’s failing
-full_html = f"""
-<div id="guessBanner">🎯 Find: <strong>{selected_name}</strong></div>
-"""
-
-# Print character at 5446 (and surrounding ones)
-print(repr(full_html[6095:6099]))
