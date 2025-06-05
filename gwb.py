@@ -3,6 +3,11 @@ import folium
 import json
 import streamlit as st
 from folium import Element
+from datetime import date
+import hashlib
+
+
+
 
 # Load the shapefile
 @st.cache_data
@@ -19,10 +24,18 @@ def safe_unicode(s):
 
 # Prepare map
 st.set_page_config(layout="wide")
-st.title("🌍 No Bordle")
-
+with st.container():
+    st.markdown("<h1 style='text-align:center;'>🌍 No Bordle</h1>", unsafe_allow_html=True)
 gdf = load_data()
-selected = gdf.sample(1).iloc[0]
+
+def get_daily_country(gdf):
+    # Use today's date to get consistent hash
+    today_str = str(date.today())
+    hashed = int(hashlib.sha256(today_str.encode()).hexdigest(), 16)
+    idx = hashed % len(gdf)
+    return gdf.iloc[idx]
+
+selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
 selected_name = safe_unicode(selected_name)
 
@@ -58,6 +71,12 @@ css = f"""
         z-index: 9999;
         pointer-events: none;
         box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        height: 50px;              /* 👈 Fixed height */
+        display: flex;             /* 👈 Center vertically */
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;       /* 👈 Prevent line breaks */
+        overflow: hidden;
     }}
 </style>
 <div id='guessBanner'>🎯 Find: <strong>{selected_name}</strong></div>
@@ -85,9 +104,32 @@ turf_js = f"""
         var countryLayer = null;
 
         {map_var}.whenReady(function() {{
+        
+            // LocalStorage key
+
+            const playedKey = "hasGuessed_" + new Date().toISOString().slice(0,10);
+
+            let locked = false;
+            const played = localStorage.getItem(playedKey);
+            const savedScore = localStorage.getItem(playedKey + "_score");
+            
+            var guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+
+            if (played && savedScore) {{
+                updateBanner("✅ You already played today. | Guesses: " + savedScore);
+                locked = true;
+                gameOver = true;
+
+                // Optionally re-show the country
+                countryLayer = L.geoJSON(countryGeoJSON, {{
+                    style: {{ color: 'green', weight: 3, fillOpacity: 0.3 }}
+                }}).addTo({map_var});
+            }}
+
             {map_var}.on('click', function(e) {{
                 if(gameOver === false){{
                     guessCount += 1;
+                    localStorage.setItem(playedKey + "_guesses", guessCount);
                 }}
                 var pt = turf.point([e.latlng.lng, e.latlng.lat]);
                 let shape;
@@ -104,6 +146,9 @@ turf_js = f"""
 
                 if (inside) {{
                     gameOver = true;
+                    localStorage.setItem(playedKey, "true");
+                    localStorage.setItem(playedKey + "_score", guessCount);
+                    locked = true;
                     updateBanner("You cheated | Guesses: " + guessCount);
                     if (!countryLayer) {{
                         countryLayer = L.geoJSON(countryGeoJSON, {{
@@ -128,5 +173,6 @@ from streamlit.components.v1 import html as st_html
 html_string = m.get_root().render()
 html_string = html_string.encode('utf-8', 'replace').decode('utf-8')
 #st_html(html_string, height=700, scrolling=True)
-st_html(m.get_root().render(), height=900, scrolling=True)
+st_html(m.get_root().render(), height=700, scrolling=False)
+
 
