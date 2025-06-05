@@ -1,0 +1,115 @@
+import geopandas as gpd
+import folium
+import json
+import streamlit as st
+from folium import Element
+
+# Load the shapefile
+@st.cache_data
+
+def load_data():
+    gdf = gpd.read_file("ne_110m_admin_0_countries.shp")
+    gdf = gdf.to_crs(epsg=4326)
+    return gdf
+
+# Prepare map
+st.set_page_config(layout="wide")
+st.title("🌍 Country Guess Game")
+
+gdf = load_data()
+selected = gdf.sample(1).iloc[0]
+selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
+selected_geom = selected.geometry
+
+# Build HTML-compatible map
+m = folium.Map(location=[20, 0], zoom_start=3, tiles=None)
+
+# Add Esri tile layer
+folium.TileLayer(
+    tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr='Tiles © Esri',
+    control=False
+).add_to(m)
+
+# Style banner + cursor
+css = f"""
+<style>
+    .leaflet-container {{
+        cursor: crosshair !important;
+    }}
+    #guessBanner {{
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.75);
+        color: white;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        font-family: sans-serif;
+        border-radius: 8px;
+        z-index: 9999;
+        pointer-events: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }}
+</style>
+<div id='guessBanner'>🎯 Find: <strong>{selected_name}</strong></div>
+"""
+m.get_root().html.add_child(Element(css))
+
+# GeoJSON geometry
+geojson_geom = json.loads(gpd.GeoSeries([selected_geom]).to_json())['features'][0]['geometry']
+geojson_str = json.dumps(geojson_geom)
+
+# JS logic
+map_var = m.get_name()
+turf_js = f"""
+(function() {{
+    var turfScript = document.createElement('script');
+    turfScript.src = 'https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js';
+    turfScript.onload = function() {{
+        var countryGeoJSON = {geojson_str};
+        var guessCount = 0;
+        const updateBanner = (text) => {{
+            document.getElementById('guessBanner').innerText = text;
+        }};
+
+        var countryLayer = null;
+
+        {map_var}.whenReady(function() {{
+            {map_var}.on('click', function(e) {{
+                guessCount += 1;
+                var pt = turf.point([e.latlng.lng, e.latlng.lat]);
+                let shape;
+
+                if (countryGeoJSON.type === "Polygon") {{
+                    shape = turf.polygon(countryGeoJSON.coordinates);
+                }} else if (countryGeoJSON.type === "MultiPolygon") {{
+                    shape = turf.multiPolygon(countryGeoJSON.coordinates);
+                }} else {{
+                    console.warn("Unsupported geometry type:", countryGeoJSON.type);
+                }}
+
+                let inside = shape ? turf.booleanPointInPolygon(pt, shape) : false;
+
+                if (inside) {{
+                    updateBanner("\ud83c\udf89 Nice! | Guesses: " + guessCount);
+                    if (!countryLayer) {{
+                        countryLayer = L.geoJSON(countryGeoJSON, {{
+                            style: {{color: 'green', weight: 3, fillOpacity: 0.3}}
+                        }}).addTo({map_var});
+                    }}
+                }} else {{
+                    updateBanner("\ud83c\udfaf Find: {selected_name} \u274c Wrong! Guesses: " + guessCount);
+                }}
+            }});
+        }});
+    }};
+    document.head.appendChild(turfScript);
+}})();
+"""
+m.get_root().script.add_child(Element(turf_js))
+
+# Render in Streamlit
+from streamlit.components.v1 import html as st_html
+st_html(m.get_root().render(), height=700, scrolling=True)
