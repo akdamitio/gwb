@@ -12,13 +12,20 @@ def load_data():
     gdf = gdf.to_crs(epsg=4326)
     return gdf
 
+def safe_unicode(s):
+    return s.encode('utf-8', 'replace').decode('utf-8') if isinstance(s, str) else s
+
+
+
 # Prepare map
 st.set_page_config(layout="wide")
-st.title("🌍 Country Guess Game")
+st.title("🌍 No Bordle")
 
 gdf = load_data()
 selected = gdf.sample(1).iloc[0]
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
+selected_name = safe_unicode(selected_name)
+
 selected_geom = selected.geometry
 
 # Build HTML-compatible map
@@ -93,14 +100,14 @@ turf_js = f"""
                 let inside = shape ? turf.booleanPointInPolygon(pt, shape) : false;
 
                 if (inside) {{
-                    updateBanner("\ud83c\udf89 Nice! | Guesses: " + guessCount);
+                    updateBanner("You cheated | Guesses: " + guessCount);
                     if (!countryLayer) {{
                         countryLayer = L.geoJSON(countryGeoJSON, {{
                             style: {{color: 'green', weight: 3, fillOpacity: 0.3}}
                         }}).addTo({map_var});
                     }}
                 }} else {{
-                    updateBanner("\ud83c\udfaf Find: {selected_name} \u274c Wrong! Guesses: " + guessCount);
+                    updateBanner("Find: {selected_name} | Ha bad | Guesses: " + guessCount);
                 }}
             }});
         }});
@@ -112,4 +119,16 @@ m.get_root().script.add_child(Element(turf_js))
 
 # Render in Streamlit
 from streamlit.components.v1 import html as st_html
+html_string = m.get_root().render()
+html_string = html_string.encode('utf-8', 'replace').decode('utf-8')
+#st_html(html_string, height=700, scrolling=True)
+
 st_html(m.get_root().render(), height=700, scrolling=True)
+
+# Create the final HTML or string that’s failing
+full_html = f"""
+<div id="guessBanner">🎯 Find: <strong>{selected_name}</strong></div>
+"""
+
+# Print character at 5446 (and surrounding ones)
+print(repr(full_html[6095:6099]))
