@@ -274,7 +274,7 @@ turf_js = f"""
                         markers[0].remove();
                     }}
 
-                    L.marker([e.latlng.lng, e.latlng.lat], {{ icon: plusIcon }}).addTo(map);
+                    L.marker([e.latlng.lng, e.latlng.lat], {{ icon: plusIcon }}).addTo({map_var});
                 
                 }}
             }});
