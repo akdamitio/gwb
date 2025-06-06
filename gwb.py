@@ -41,6 +41,8 @@ def get_daily_country(gdf):
 selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
 selected_type = selected['TYPE']
+if(selected['SOVERIGNT'] != selected_name):
+   selected_type = selected_type + f" [{selected['SOVERIGNT']}]"
 selected_name = safe_unicode(selected_name)
 
 selected_geom = selected.geometry
