@@ -201,17 +201,17 @@ turf_js = f"""
         {map_var}.whenReady(function() {{
 
         const plusIcon = L.divIcon({{
-          className: '',
-          html: `
-            <div class="plus-marker">
-              <svg width="20" height="20" viewBox="0 0 20 20">
-                <line x1="10" y1="4" x2="10" y2="16" stroke="red" stroke-width="2"/>
-                <line x1="4" y1="10" x2="16" y2="10" stroke="red" stroke-width="2"/>
-              </svg>
-            </div>
-          `,
-          iconSize: [40, 40],
-          iconAnchor: [20, 20]
+            className: '',
+            html: `
+                <div class="plus-marker">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <line x1="20" y1="8" x2="20" y2="32" stroke="red" stroke-width="2"/>
+                        <line x1="8" y1="20" x2="32" y2="20" stroke="red" stroke-width="2"/>
+                    </svg>
+                </div>
+            `,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
         }});        
 
 
@@ -274,12 +274,8 @@ turf_js = f"""
                         markers[0].remove();
                     }}
 
-                    L.marker(e.latlng, {{
-                        icon: L.divIcon({{
-                            className: 'plus-marker',
-                            iconSize: [40, 40]
-                        }})
-                    }}).addTo({map_var});                    
+                    L.marker([lat, lng], {{ icon: plusIcon }}).addTo(map);
+                
                 }}
             }});
 
