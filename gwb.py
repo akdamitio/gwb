@@ -256,8 +256,7 @@ turf_js = f"""
                         radius: 3,
                         color: 'red',
                         fillColor: 'red',
-                        Opacity: 0.8,
-                        iconAnchor: [1.5,1.5]
+                        Opacity: 0.8
                     }}).addTo({map_var});
                 }}
             }};
@@ -337,8 +336,7 @@ turf_js = f"""
                                 radius: 3,
                                 color: 'red',
                                 fillColor: 'red',
-                                Opacity: 0.8,
-                                iconAnchor: [1.5,1.5]
+                                Opacity: 0.8
                             }}).addTo({map_var});       
 
                             const messageIndex = guessCount - 1;
