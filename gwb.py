@@ -223,7 +223,7 @@ turf_js = f"""
 
             }}
 
-            if (played) {{
+            if (false) {{
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
                 gameOver = true;
