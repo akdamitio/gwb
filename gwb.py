@@ -98,14 +98,16 @@ css = f"""
       height: 40px;
       position: relative;
       display: flex;
+      color: red
       justify-content: center;
       align-items: center;
       pointer-events: none;
+      font-weight: 200
     }}
     
     .plus-marker::before {{
       content: "+";
-      font-size: 18px;
+      font-size: 40px;
       font-weight: bold;
       color: red;
       display: block;
