@@ -96,22 +96,11 @@ css = f"""
     .plus-marker {{
       width: 40px;
       height: 40px;
-      position: relative;
       display: flex;
-      color: red
       justify-content: center;
       align-items: center;
       pointer-events: none;
       font-weight: 200
-    }}
-    
-    .plus-marker::before {{
-      content: "+";
-      font-size: 40px;
-      color: red;
-      display: block;
-      text-align: center;
-      line-height: 20px;
     }}
 
 
@@ -209,6 +198,20 @@ turf_js = f"""
         var countryLayer = null;
 
         {map_var}.whenReady(function() {{
+
+        const plusIcon = L.divIcon({
+          className: '',
+          html: `
+            <div class="plus-marker">
+              <svg width="20" height="20" viewBox="0 0 20 20">
+                <line x1="10" y1="4" x2="10" y2="16" stroke="red" stroke-width="2"/>
+                <line x1="4" y1="10" x2="16" y2="10" stroke="red" stroke-width="2"/>
+              </svg>
+            </div>
+          `,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
+        });        
 
 
         
