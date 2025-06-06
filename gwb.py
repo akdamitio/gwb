@@ -102,12 +102,12 @@ css = f"""
       justify-content: center;
       align-items: center;
       pointer-events: none;
-      font-weight: 200
+      font-weight: 100
     }}
     
     .plus-marker::before {{
       content: "+";
-      font-size: 40px;
+      font-size: 30px;
       font-weight: bold;
       color: red;
       display: block;
