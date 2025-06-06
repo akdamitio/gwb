@@ -100,6 +100,10 @@ css = f"""
         pointer-events: none;
         font-weight: 150;
     }}
+    .plus-marker::before {{
+        content: "+";        
+    }}
+
 
 
     #lockButton {{
@@ -197,12 +201,7 @@ turf_js = f"""
 
         {map_var}.whenReady(function() {{
 
-            var plusIcon = L.divIcon({{
-                html: '<div class="plus-marker">+</div>',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20],
-                className: 'plus-marker'
-            }});
+
         
             // LocalStorage key
 
@@ -265,6 +264,7 @@ turf_js = f"""
                         icon: L.divIcon({{
                             className: 'plus-marker',
                             iconSize: [40, 40]
+                            iconAnchor: [20, 20],
                         }})
                     }}).addTo({map_var});                    
                 }}
