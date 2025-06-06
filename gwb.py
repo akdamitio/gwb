@@ -16,7 +16,7 @@ js_messages = json.dumps(shuf)
 @st.cache_data
 
 def load_data():
-    gdf = gpd.read_file("ne_110m_admin_0_countries.shp")
+    gdf = gpd.read_file("ne_10m_admin_0_countries.shp")
     gdf = gdf.to_crs(epsg=4326)
     return gdf
 
@@ -40,6 +40,7 @@ def get_daily_country(gdf):
 
 selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
+selected_type = selected['TYPE']
 selected_name = safe_unicode(selected_name)
 
 selected_geom = selected.geometry
@@ -145,7 +146,7 @@ css = f"""
     }}
         
 </style>
-<div id='guessBanner'>🎯 Find:  <strong>{selected_name}</strong></div>
+<div id='guessBanner'>🎯 Find: <strong>{selected_name}</strong> ({selected_type})</div>
 <div><button id="lockButton">🔒 Lock In Guess</button></div>
 <div id="wrongGuessPopup"></div>
 
