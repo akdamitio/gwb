@@ -321,7 +321,7 @@ turf_js = f"""
                         L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                             icon: L.divIcon({{
                                 className: 'star-marker',
-                                iconSize: [20, 20]
+                                iconSize: [20, 20],
                                 iconAnchor: [10,10]
 
                             }})
