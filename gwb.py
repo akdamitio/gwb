@@ -199,7 +199,7 @@ turf_js = f"""
 
         {map_var}.whenReady(function() {{
 
-        const plusIcon = L.divIcon({
+        const plusIcon = L.divIcon({{
           className: '',
           html: `
             <div class="plus-marker">
@@ -211,7 +211,7 @@ turf_js = f"""
           `,
           iconSize: [40, 40],
           iconAnchor: [20, 20]
-        });        
+        }});        
 
 
         
