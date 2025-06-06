@@ -256,7 +256,7 @@ turf_js = f"""
                         radius: 3,
                         color: 'red',
                         fillColor: 'red',
-                        fillOpacity: 0.8
+                        Opacity: 0.8
                     }}).addTo({map_var});
                 }}
             }};
