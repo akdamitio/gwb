@@ -107,7 +107,7 @@ css = f"""
     
     .plus-marker::before {{
       content: "+";
-      font-size: 30px;
+      font-size: 40px;
       font-weight: bold;
       color: red;
       display: block;
