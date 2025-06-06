@@ -94,14 +94,23 @@ css = f"""
     }}
 
     .plus-marker {{
-        color: black;
-        font-size: 50px;
-        text-align: center;
-        pointer-events: none;
-        font-weight: 150;
+      width: 40px;
+      height: 40px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
     }}
+    
     .plus-marker::before {{
-        content: "+";        
+      content: "+";
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+      display: block;
+      text-align: center;
+      line-height: 20px;
     }}
 
 
