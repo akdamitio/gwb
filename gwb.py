@@ -274,7 +274,7 @@ turf_js = f"""
                         icon: L.divIcon({{
                             className: 'plus-marker',
                             iconSize: [40, 40],
-                            iconAnchor: [20, 20]
+                            iconAnchor: [0, 0]
                         }})
                     }}).addTo({map_var});                    
                 }}
