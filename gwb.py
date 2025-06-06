@@ -256,7 +256,8 @@ turf_js = f"""
                         radius: 3,
                         color: 'red',
                         fillColor: 'red',
-                        Opacity: 0.8
+                        Opacity: 0.8,
+                        iconAnchor: [1.5,1.5]
                     }}).addTo({map_var});
                 }}
             }};
@@ -322,6 +323,8 @@ turf_js = f"""
                             icon: L.divIcon({{
                                 className: 'star-marker',
                                 iconSize: [20, 20]
+                                iconAnchor: [10,10]
+
                             }})
                         }}).addTo({map_var});
 
@@ -334,7 +337,8 @@ turf_js = f"""
                                 radius: 3,
                                 color: 'red',
                                 fillColor: 'red',
-                                Opacity: 0.8
+                                Opacity: 0.8,
+                                iconAnchor: [1.5,1.5]
                             }}).addTo({map_var});       
 
                             const messageIndex = guessCount - 1;
