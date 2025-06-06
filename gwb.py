@@ -166,7 +166,6 @@ turf_js = f"""
 (function() {{
     var gameOver = false;
     localStorage.clear();
-    location.reload();
     var turfScript = document.createElement('script');
     turfScript.src = 'https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js';
     turfScript.onload = function() {{
