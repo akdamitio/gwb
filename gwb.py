@@ -210,7 +210,8 @@ turf_js = f"""
             var tapCount = 0;
             const savedScore = localStorage.getItem(playedKey + "_score");
             
-            guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+            // guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+            
 
             if (savedScore === "Suck") {{
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
