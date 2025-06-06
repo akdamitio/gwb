@@ -33,7 +33,7 @@ gdf = load_data()
 
 def get_daily_country(gdf):
     # Use today's date to get consistent hash
-    today_str = str(date.today())
+    today_str = str(date.today()+random())
     hashed = int(hashlib.sha256(today_str.encode()).hexdigest(), 16)
     idx = hashed % len(gdf)
     return gdf.iloc[idx]
@@ -95,11 +95,11 @@ css = f"""
 
     .plus-marker {{
         color: black;
-        font-size: 30px;
-        line-height: 30px;
+        font-size: 50px;
+        line-height: 50px;
         text-align: center;
         pointer-events: none;
-        font-weight: 100;
+        font-weight: 150;
 
     }}
     .plus-marker::before {{
@@ -238,13 +238,11 @@ turf_js = f"""
             const reloadGuesses = () => {{
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
-                    L.circleMarker([lat, lng], {{
+                    L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                         radius: 3,
                         color: 'red',
-                        weight: 1,
                         fillColor: 'red',
-                        fillOpacity: 0.6,
-                        className: 'guess-dot'
+                        fillOpacity: 0.8
                     }}).addTo({map_var});
                 }}
             }};
@@ -262,7 +260,7 @@ turf_js = f"""
                     L.marker(e.latlng, {{
                         icon: L.divIcon({{
                             className: 'plus-marker',
-                            iconSize: [20, 20]
+                            iconSize: [40, 40]
                         }})
                     }}).addTo({map_var});                    
                 }}
