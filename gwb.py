@@ -102,7 +102,7 @@ css = f"""
       justify-content: center;
       align-items: center;
       pointer-events: none;
-      font-weight: 150
+      font-weight: 200
     }}
     
     .plus-marker::before {{
@@ -274,7 +274,7 @@ turf_js = f"""
                         icon: L.divIcon({{
                             className: 'plus-marker',
                             iconSize: [40, 40],
-                            iconAnchor: [0, 0]
+                            iconAnchor: [20, 20]
                         }})
                     }}).addTo({map_var});                    
                 }}
