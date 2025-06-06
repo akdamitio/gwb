@@ -45,7 +45,7 @@ selected_name = safe_unicode(selected_name)
 selected_geom = selected.geometry
 
 # Build HTML-compatible map
-m = folium.Map(location=[20, 0], zoom_start=1, tiles=None)
+m = folium.Map(location=[20, 0], zoom_start=2, tiles=None)
 
 # Add Esri tile layer
 folium.TileLayer(
