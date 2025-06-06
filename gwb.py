@@ -263,8 +263,8 @@ turf_js = f"""
                     L.marker(e.latlng, {{
                         icon: L.divIcon({{
                             className: 'plus-marker',
-                            iconSize: [40, 40]
-                            iconAnchor: [20, 20],
+                            iconSize: [40, 40],
+                            iconAnchor: [20, 20]
                         }})
                     }}).addTo({map_var});                    
                 }}
