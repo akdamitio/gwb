@@ -211,7 +211,7 @@ turf_js = f"""
                 </div>
             `,
             iconSize: [40, 40],
-            iconAnchor: [20, 20]
+            iconAnchor: [0, 0]
         }});        
 
 
