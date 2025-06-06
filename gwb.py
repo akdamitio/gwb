@@ -249,11 +249,13 @@ turf_js = f"""
             const reloadGuesses = () => {{
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
-                    L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
+                    L.circleMarker([lat, lng], {{
                         radius: 3,
                         color: 'red',
+                        weight: 1,
                         fillColor: 'red',
-                        Opacity: 0.8
+                        fillOpacity: 0.6,
+                        className: 'guess-dot'
                     }}).addTo({map_var});
                 }}
             }};
