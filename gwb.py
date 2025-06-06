@@ -33,7 +33,7 @@ gdf = load_data()
 
 def get_daily_country(gdf):
     # Use today's date to get consistent hash
-    today_str = str(random.randint(1,200))
+    today_str = str(date.today())
     hashed = int(hashlib.sha256(today_str.encode()).hexdigest(), 16)
     idx = hashed % len(gdf)
     return gdf.iloc[idx]
@@ -222,7 +222,7 @@ turf_js = f"""
             var tapCount = 0;
             const savedScore = localStorage.getItem(playedKey + "_score");
             
-            // guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+            guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
             
 
             if (savedScore === "Suck") {{
@@ -236,7 +236,7 @@ turf_js = f"""
 
             }}
 
-            if (false) {{
+            if (played) {{
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
                 gameOver = true;
