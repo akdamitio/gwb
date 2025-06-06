@@ -99,7 +99,7 @@ css = f"""
         text-align: center;
         pointer-events: none;
         font-weight: 150;
-
+    }}
 
 
     #lockButton {{
