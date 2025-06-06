@@ -5,8 +5,11 @@ import streamlit as st
 from folium import Element
 from datetime import date
 import hashlib
+import random
 
-
+phrases = ['🙈', "i'm working on a beginner mode, you might enjoy that one",'ha bad', "didn't hurt yourself thinking that hard, right?", 'cmon dawg', 'just blow in from stupid town?', 'double dose of stupid pills this morning?', 'oh so close! or are you...?', "where'd you go to school, idiot university?", 'srsly?', 'lol', "ain't it chief", 'this is painful', 'tough scenes', '...', 'nah bro', 'oof', "you were mama's 'special little boy' huh?", "there's always tomorrow", 'ur doing great sweetie', "you are dumb", 'no', 'ok this time try for real', 'do you have special needs?', 'nuh uh', "shame what happened to amelia earhardt...should've been you", "don't reproduce", 'you have the IQ of butter lettuce', '🤨']
+shuf = random.sample(phrases, k=6)
+js_messages = json.dumps(shuf)
 
 
 # Load the shapefile
@@ -77,11 +80,81 @@ css = f"""
         justify-content: center;
         white-space: nowrap;       /* 👈 Prevent line breaks */
         overflow: hidden;
+
     }}
+    .star-marker {{
+        color: gold;
+        font-size: 20px;
+        line-height: 20px;
+        text-align: center;
+        pointer-events: none;
+    }}
+    .star-marker::before {{
+        content: "★";        
+    }}
+
+    .plus-marker {{
+        color: black;
+        font-size: 30px;
+        line-height: 30px;
+        text-align: center;
+        pointer-events: none;
+        font-weight: 100;
+
+    }}
+    .plus-marker::before {{
+        content: "+";        
+    }}
+
+
+    #lockButton {{
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        padding: 10px 20px;
+        background: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: bold;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        cursor: pointer;
+    }}
+    #lockButton:disabled {{
+        background: #888;
+        cursor: not-allowed;
+    }}
+
+    #wrongGuessPopup {{
+        position: fixed;
+        top: 60px; /* Slightly below the #guessBanner which is at 10px + ~40px height */
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 0, 0, 0.9);
+        color: white;
+        padding: 8px 16px;
+        font-size: 1em;
+        font-family: sans-serif;
+        border-radius: 6px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        pointer-events: none;
+        white-space: nowrap;
+    }}
+        
 </style>
-<div id='guessBanner'>🎯 Find: <strong>{selected_name}</strong></div>
+<div id='guessBanner'>🎯 Find:  <strong>{selected_name}</strong></div>
+<div><button id="lockButton">🔒 Lock In Guess</button></div>
+<div id="wrongGuessPopup"></div>
+
 """
 m.get_root().html.add_child(Element(css))
+
+
 
 # GeoJSON geometry
 geojson_geom = json.loads(gpd.GeoSeries([selected_geom]).to_json())['features'][0]['geometry']
@@ -97,6 +170,29 @@ turf_js = f"""
     turfScript.onload = function() {{
         var countryGeoJSON = {geojson_str};
         var guessCount = 0;
+        const lockBtn = document.getElementById("lockButton");
+        var pt = 0
+        const wrongGuessMessages = {js_messages};
+
+        const saveGuess = (lat, lng) => {{
+            const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
+            stored.push([lat, lng]);
+            localStorage.setItem('guesses', JSON.stringify(stored));
+        }};
+
+        const showWrongGuessPopup = (message) => {{
+            const popup = document.getElementById('wrongGuessPopup');
+            if (!popup) return;
+            popup.innerText = message;
+            popup.style.opacity = 0.7;
+            setTimeout(() => {{
+                popup.style.opacity = 0;
+            }}, 3000);
+        }};
+
+        const markers = document.getElementsByClassName("plus-marker");
+
+
         const updateBanner = (text) => {{
             document.getElementById('guessBanner').innerText = text;
         }};
@@ -111,11 +207,23 @@ turf_js = f"""
 
             let locked = false;
             const played = localStorage.getItem(playedKey);
+            var tapCount = 0;
             const savedScore = localStorage.getItem(playedKey + "_score");
             
-            var guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+            guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
 
-            if (played && savedScore) {{
+            if (savedScore === "Suck") {{
+                updateBanner("✅ You already played today. | Guesses: " + savedScore);
+                locked = true;
+                gameOver = true;
+                // Optionally re-show the country
+                countryLayer = L.geoJSON(countryGeoJSON, {{
+                    style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
+                }}).addTo({map_var});
+
+            }}
+
+            if (played) {{
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
                 gameOver = true;
@@ -126,38 +234,116 @@ turf_js = f"""
                 }}).addTo({map_var});
             }}
 
+
+            const reloadGuesses = () => {{
+                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
+                for (const [lat, lng] of stored) {{
+                    L.circleMarker([lat, lng], {{
+                        radius: 3,
+                        color: 'red',
+                        weight: 1,
+                        fillColor: 'red',
+                        fillOpacity: 0.6,
+                        className: 'guess-dot'
+                    }}).addTo({map_var});
+                }}
+            }};
+            reloadGuesses();
+
             {map_var}.on('click', function(e) {{
                 if(gameOver === false){{
-                    guessCount += 1;
-                    localStorage.setItem(playedKey + "_guesses", guessCount);
-                }}
-                var pt = turf.point([e.latlng.lng, e.latlng.lat]);
-                let shape;
+                    tapCount = 1;
+                    pt = turf.point([e.latlng.lng, e.latlng.lat]);
 
-                if (countryGeoJSON.type === "Polygon") {{
-                    shape = turf.polygon(countryGeoJSON.coordinates);
-                }} else if (countryGeoJSON.type === "MultiPolygon") {{
-                    shape = turf.multiPolygon(countryGeoJSON.coordinates);
-                }} else {{
-                    console.warn("Unsupported geometry type:", countryGeoJSON.type);
-                }}
-
-                let inside = shape ? turf.booleanPointInPolygon(pt, shape) : false;
-
-                if (inside) {{
-                    gameOver = true;
-                    localStorage.setItem(playedKey, "true");
-                    localStorage.setItem(playedKey + "_score", guessCount);
-                    locked = true;
-                    updateBanner("You cheated | Guesses: " + guessCount);
-                    if (!countryLayer) {{
-                        countryLayer = L.geoJSON(countryGeoJSON, {{
-                            style: {{color: 'green', weight: 3, fillOpacity: 0.3}}
-                        }}).addTo({map_var});
+                    while (markers.length > 0) {{
+                        markers[0].remove();
                     }}
-                }} else {{
-                    if(gameOver === false){{
-                        updateBanner("Find: {selected_name} | Ha bad | Guesses: " + guessCount);
+
+                    L.marker(e.latlng, {{
+                        icon: L.divIcon({{
+                            className: 'plus-marker',
+                            iconSize: [20, 20]
+                        }})
+                    }}).addTo({map_var});                    
+                }}
+            }});
+
+            lockButton.addEventListener("click", function() {{
+                if(tapCount === 1) {{
+                    guessCount += 1
+                    localStorage.setItem(playedKey + "_guesses", guessCount);
+                    saveGuess(pt.geometry.coordinates[1], pt.geometry.coordinates[0]);
+
+                    tapCount = 0
+
+                    while (markers.length > 0) {{
+                        markers[0].remove();
+                    }}
+                    
+
+                    let shape;
+
+                    if (countryGeoJSON.type === "Polygon") {{
+                        shape = turf.polygon(countryGeoJSON.coordinates);
+                    }} else if (countryGeoJSON.type === "MultiPolygon") {{
+                        shape = turf.multiPolygon(countryGeoJSON.coordinates);
+                    }} else {{
+                        console.warn("Unsupported geometry type:", countryGeoJSON.type);
+                    }}
+
+                    let inside = shape ? turf.booleanPointInPolygon(pt, shape) : false;
+
+                    if (inside) {{
+                        gameOver = true;
+                        localStorage.setItem(playedKey, "true");
+                        localStorage.setItem(playedKey + "_score", guessCount);
+                        locked = true;
+                        updateBanner("Bingo | Guesses: " + guessCount);
+                        if (!countryLayer) {{
+                            countryLayer = L.geoJSON(countryGeoJSON, {{
+                                style: {{color: 'green', weight: 3, fillOpacity: 0.3}}
+                            }}).addTo({map_var});
+                        }}
+
+                        L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
+                            icon: L.divIcon({{
+                                className: 'star-marker',
+                                iconSize: [20, 20]
+                            }})
+                        }}).addTo({map_var});
+
+
+                    }} else {{
+                        if(gameOver === false){{
+                        
+                            // Add marker at clicked location
+                            L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
+                                radius: 3,
+                                color: 'red',
+                                fillColor: 'red',
+                                fillOpacity: 0.8
+                            }}).addTo({map_var});       
+
+                            const messageIndex = guessCount - 1;
+                            const msg = wrongGuessMessages[messageIndex % wrongGuessMessages.length];
+                            showWrongGuessPopup(msg);   
+                            
+                            if (guessCount === 6) {{
+                                countryLayer = L.geoJSON(countryGeoJSON, {{
+                                    style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
+                                }}).addTo({map_var});
+                                updateBanner("6 tries is enough. You lose.");
+                                gameOver = true;
+                                locked = true;
+                                localStorage.setItem(playedKey + "_score", "Suck")
+
+
+                            }} else{{
+                                updateBanner("Find: {selected_name} | Guesses: " + guessCount);
+                            
+                            }}
+
+                        }}
                     }}
                 }}
             }});
@@ -173,6 +359,6 @@ from streamlit.components.v1 import html as st_html
 html_string = m.get_root().render()
 html_string = html_string.encode('utf-8', 'replace').decode('utf-8')
 #st_html(html_string, height=700, scrolling=True)
-st_html(m.get_root().render(), height=500, scrolling=False)
+st_html(m.get_root().render(), height=450, scrolling=False)
 
 
