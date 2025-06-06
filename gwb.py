@@ -211,7 +211,7 @@ turf_js = f"""
                 </div>
             `,
             iconSize: [40, 40],
-            iconAnchor: [0, 0]
+            iconAnchor: [20, 20]
         }});        
 
 
@@ -274,7 +274,7 @@ turf_js = f"""
                         markers[0].remove();
                     }}
 
-                    L.marker([e.latlng.lng, e.latlng.lat], {{ icon: plusIcon }}).addTo({map_var});
+                    L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});
                 
                 }}
             }});
