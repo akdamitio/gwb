@@ -45,7 +45,7 @@ selected_name = safe_unicode(selected_name)
 selected_geom = selected.geometry
 
 # Build HTML-compatible map
-m = folium.Map(location=[20, 0], zoom_start=2, tiles=None)
+m = folium.Map(location=[20, 0], zoom_start=1, tiles=None)
 
 # Add Esri tile layer
 folium.TileLayer(
@@ -163,7 +163,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    localStorage.clear();
+    //localStorage.clear();
     var turfScript = document.createElement('script');
     turfScript.src = 'https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js';
     turfScript.onload = function() {{
