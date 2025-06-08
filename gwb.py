@@ -274,7 +274,14 @@ turf_js = f"""
             }});        
 
             // Define the Esri basemap layer (but don’t add it yet)
-            var basemap = L.tileLayer(r{"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"},{{attribution: 'Tiles © Esri', detectRetina: true}});
+            (function() {{
+                var basemap = L.tileLayer(
+                    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{{{z}}}}/{{{{y}}}}/{{{{x}}}}',
+                    {{{{
+                        attribution: 'Tiles © Esri',
+                        detectRetina: true
+                    }}}}
+                );
         
             // LocalStorage key
 
