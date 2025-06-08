@@ -6,29 +6,10 @@ from folium import Element
 from datetime import date
 import hashlib
 import random
-from streamlit.components.v1 import components
+from streamlit_javascript import st_javascript
 
-# Streamlit custom component to get user's local date
-date_string = components.html(
-    """
-    <script>
-        const today = new Date();
-        const dateStr = today.toISOString().split('T')[0]; // e.g. "2025-06-08"
-        const streamlitDoc = window.parent.document;
-
-        const input = streamlitDoc.createElement("input");
-        input.type = "hidden";
-        input.name = "local_date";
-        input.value = dateStr;
-        streamlitDoc.body.appendChild(input);
-
-        // Send it back to Streamlit
-        window.parent.postMessage({ type: "streamlit:setComponentValue", value: dateStr }, "*");
-    </script>
-    """,
-    height=0,
-)
-
+js_code = "new Date().toISOString().split('T')[0]"  # e.g., "2025-06-08"
+date_string = st_javascript(js_code=js_code)
 
 
 
