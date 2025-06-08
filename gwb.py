@@ -42,7 +42,7 @@ selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
 selected_type = selected['TYPE']
 if(selected['SOVERIGNT'] != selected_name):
-   selected_type = selected_type + f" [{selected['SOVERIGNT']}]"
+   selected_type = selected_type + f" [{selected['SOVEREIGNT']}]"
 selected_name = safe_unicode(selected_name)
 
 selected_geom = selected.geometry
@@ -203,19 +203,19 @@ turf_js = f"""
 
         {map_var}.whenReady(function() {{
 
-        const plusIcon = L.divIcon({{
-            className: '',
-            html: `
-                <div class="plus-marker">
-                    <svg width="40" height="40" viewBox="0 0 40 40">
-                        <line x1="20" y1="8" x2="20" y2="32" stroke="red" stroke-width="2"/>
-                        <line x1="8" y1="20" x2="32" y2="20" stroke="red" stroke-width="2"/>
-                    </svg>
-                </div>
-            `,
-            iconSize: [40, 40],
-            iconAnchor: [20, 20]
-        }});        
+            const plusIcon = L.divIcon({{
+                className: '',
+                html: `
+                    <div class="plus-marker">
+                        <svg width="40" height="40" viewBox="0 0 40 40">
+                            <line x1="20" y1="8" x2="20" y2="32" stroke="red" stroke-width="2"/>
+                            <line x1="8" y1="20" x2="32" y2="20" stroke="red" stroke-width="2"/>
+                        </svg>
+                    </div>
+                `,
+                iconSize: [40, 40],
+                iconAnchor: [20, 20]
+            }});        
 
 
         
