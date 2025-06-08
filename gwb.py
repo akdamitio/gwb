@@ -6,6 +6,31 @@ from folium import Element
 from datetime import date
 import hashlib
 import random
+from streamlit.components.v1 import components
+
+# Streamlit custom component to get user's local date
+date_string = components.html(
+    """
+    <script>
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0]; // e.g. "2025-06-08"
+        const streamlitDoc = window.parent.document;
+
+        const input = streamlitDoc.createElement("input");
+        input.type = "hidden";
+        input.name = "local_date";
+        input.value = dateStr;
+        streamlitDoc.body.appendChild(input);
+
+        // Send it back to Streamlit
+        window.parent.postMessage({ type: "streamlit:setComponentValue", value: dateStr }, "*");
+    </script>
+    """,
+    height=0,
+)
+
+
+
 
 phrases = ['🙈', "i'm working on a beginner mode,\nyou might enjoy that one",'ha bad', "didn't hurt yourself thinking that hard, right?", 'cmon dawg', 'just blow in from stupid town?', 'double dose of stupid pills this morning?', 'oh so close! or are you...?', "where'd you go to school, idiot university?", 'srsly?', 'lol', "ain't it chief", 'this is painful', 'tough scenes', '...', 'nah bro', 'oof', "you were mama's 'special little boy' huh?", "there's always tomorrow", 'ur doing great sweetie', "you are dumb", 'no', 'ok this time try for real', 'do you have special needs?', 'nuh uh', "shame what happened to amelia earhardt...\nshould've been you", "don't reproduce", 'you have the IQ of butter lettuce', '🤨']
 shuf = random.sample(phrases, k=6)
@@ -33,7 +58,7 @@ gdf = load_data()
 
 def get_daily_country(gdf):
     # Use today's date to get consistent hash
-    today_str = str(date.today())
+    today_str = date_string
     hashed = int(hashlib.sha256(today_str.encode()).hexdigest(), 16)
     idx = hashed % len(gdf)
     return gdf.iloc[idx]
@@ -41,7 +66,7 @@ def get_daily_country(gdf):
 selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
 selected_type = selected['TYPE']
-if(selected['SOVERIGNT'] != selected_name):
+if(selected['SOVEREIGNT'] != selected_name):
    selected_type = selected_type + f" [{selected['SOVEREIGNT']}]"
 selected_name = safe_unicode(selected_name)
 
