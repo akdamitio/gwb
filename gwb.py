@@ -63,6 +63,7 @@ selected_geom = selected.geometry
 
 # Build HTML-compatible map
 m = folium.Map(location=[20, 0], zoom_start=1, tiles=None)
+b = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 
 # Equator: Line from -180 to +180 longitude at 0 latitude
 folium.PolyLine(
@@ -229,7 +230,7 @@ turf_js = f"""
 
         // Define the Esri basemap layer (but don’t add it yet)
         var basemap = L.tileLayer(
-          r"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+          {b},
           {{
             attribution: 'Tiles © Esri',
             detectRetina: true
