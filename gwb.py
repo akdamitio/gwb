@@ -226,6 +226,15 @@ turf_js = f"""
             }}, 3000);
         }};
 
+        // Define the Esri basemap layer (but don’t add it yet)
+        var basemap = L.tileLayer(
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          {{
+            attribution: 'Tiles © Esri',
+            detectRetina: true
+          }}
+        );
+
         const markers = document.getElementsByClassName("plus-marker");
 
 
@@ -347,6 +356,9 @@ turf_js = f"""
                         localStorage.setItem(playedKey + "_score", guessCount);
                         locked = true;
                         updateBanner("Bingo | Guesses: " + guessCount);
+                        if (!{map_var}.hasLayer(basemap)) {{
+                            {map_var}.addLayer(basemap);
+                        }}
                         if (!countryLayer) {{
                             countryLayer = L.geoJSON(countryGeoJSON, {{
                                 style: {{color: 'green', weight: 3, fillOpacity: 0.3}}
@@ -386,6 +398,9 @@ turf_js = f"""
                                 gameOver = true;
                                 locked = true;
                                 localStorage.setItem(playedKey + "_score", "Suck")
+                                    if (!{map_var}.hasLayer(basemap)) {{
+                                        {map_var}.addLayer(basemap);
+                                    }}
 
 
                             }} else{{
