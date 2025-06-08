@@ -227,7 +227,7 @@ turf_js = f"""
         var countryGeoJSON = {geojson_str};
         var guessCount = 0;
         const lockBtn = document.getElementById("lockButton");
-        var pt = 0
+        var pt = 0;
         const wrongGuessMessages = {js_messages};
 
         const saveGuess = (lat, lng) => {{
