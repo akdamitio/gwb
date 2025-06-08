@@ -255,7 +255,14 @@ turf_js = f"""
                 iconAnchor: [20, 20]
             }});        
 
-
+            // Define the Esri basemap layer (but don’t add it yet)
+            var basemap = L.tileLayer(
+                {b},
+                {{
+                attribution: 'Tiles © Esri',
+                detectRetina: true
+                }}
+            );
         
             // LocalStorage key
 
