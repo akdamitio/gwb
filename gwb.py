@@ -9,7 +9,10 @@ import random
 from streamlit_javascript import st_javascript
 
 # Prepare map
-st.set_page_config(layout="wide")
+if date_string:
+    st.set_page_config(layout="wide")
+else:
+    st.warning("Loading game...")
 
 
 js_code = "new Date().toISOString().split('T')[0]"  # e.g., "2025-06-08"
