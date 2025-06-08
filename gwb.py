@@ -37,7 +37,7 @@ def safe_unicode(s):
 
 
 with st.container():
-    st.markdown("<h1 style='text-align:center;'>🌍 No Bordle</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center;'>🌍 No Bordle - IMPOSSIBLE</h1>", unsafe_allow_html=True)
 gdf = load_data()
 
 def get_daily_country(gdf):
