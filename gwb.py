@@ -8,6 +8,11 @@ import hashlib
 import random
 from streamlit_javascript import st_javascript
 
+# Prepare map
+st.set_page_config(layout="wide")
+with st.container():
+    st.markdown("<h1 style='text-align:center;'>🌍 No Bordle</h1>", unsafe_allow_html=True)
+
 js_code = "new Date().toISOString().split('T')[0]"  # e.g., "2025-06-08"
 date_string = st_javascript(js_code=js_code)
 
@@ -31,10 +36,7 @@ def safe_unicode(s):
 
 
 
-# Prepare map
-st.set_page_config(layout="wide")
-with st.container():
-    st.markdown("<h1 style='text-align:center;'>🌍 No Bordle</h1>", unsafe_allow_html=True)
+
 gdf = load_data()
 
 def get_daily_country(gdf):
