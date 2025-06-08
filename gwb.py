@@ -83,6 +83,24 @@ folium.PolyLine(
     opacity=0.6
 ).add_to(m)
 
+# Prime Meridian: Line from -90 to +90 latitude at 0 longitude
+folium.PolyLine(
+    locations=[[-90, 180], [90, 180]],
+    color='red',
+    weight=1,
+    dash_array='5, 5',
+    opacity=0.6
+).add_to(m)
+
+# Prime Meridian: Line from -90 to +90 latitude at 0 longitude
+folium.PolyLine(
+    locations=[[-90, -180], [90, -180]],
+    color='red',
+    weight=1,
+    dash_array='5, 5',
+    opacity=0.6
+).add_to(m)
+
 # Style banner + cursor
 css = f"""
 <style>
@@ -256,13 +274,7 @@ turf_js = f"""
             }});        
 
             // Define the Esri basemap layer (but don’t add it yet)
-            var basemap = L.tileLayer(
-                {b},
-                {{
-                attribution: 'Tiles © Esri',
-                detectRetina: true
-                }}
-            );
+            var basemap = L.tileLayer({{b}},{{attribution: 'Tiles © Esri', detectRetina: true}});
         
             // LocalStorage key
 
