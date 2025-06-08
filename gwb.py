@@ -18,7 +18,7 @@ date_string = st_javascript(js_code=js_code)
 
 
 
-phrases = ['🙈', "i'm working on a beginner mode,\nyou might enjoy that one",'ha bad', "didn't hurt yourself thinking that hard, right?", 'cmon dawg', 'just blow in from stupid town?', 'double dose of stupid pills this morning?', 'oh so close! or are you...?', "where'd you go to school, idiot university?", 'srsly?', 'lol', "ain't it chief", 'this is painful', 'tough scenes', '...', 'nah bro', 'oof', "you were mama's 'special little boy' huh?", "there's always tomorrow", 'ur doing great sweetie', "you are dumb", 'no', 'ok this time try for real', 'do you have special needs?', 'nuh uh', "shame what happened to amelia earhardt...\nshould've been you", "don't reproduce", 'you have the IQ of butter lettuce', '🤨']
+phrases = ['🙈', "i'm working on a beginner mode,\nyou might enjoy that one",'ha bad', "didn't hurt yourself thinking that hard, right?", 'cmon dawg', 'just blow in from stupid town?', 'double dose of stupid pills this morning?', 'oh so close! or are you...?', "where'd you go to school, idiot university?", 'srsly?', 'lol', "ain't it chief", 'this is painful', 'tough scenes', '...', 'nah bro', 'oof', "you were mama's 'special little boy' huh?", "there's always tomorrow", 'ur doing great sweetie', "you are dumb", 'no', 'ok this time try for real', 'nuh uh', "shame what happened to amelia earhardt...\nshould've been you", "don't reproduce", 'you have the IQ of butter lettuce', '🤨']
 shuf = random.sample(phrases, k=6)
 js_messages = json.dumps(shuf)
 
