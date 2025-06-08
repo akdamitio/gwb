@@ -62,11 +62,22 @@ selected_geom = selected.geometry
 # Build HTML-compatible map
 m = folium.Map(location=[20, 0], zoom_start=1, tiles=None)
 
-# Add Esri tile layer
-folium.TileLayer(
-    tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attr='Tiles © Esri',
-    control=False
+# Equator: Line from -180 to +180 longitude at 0 latitude
+folium.PolyLine(
+    locations=[[0, -180], [0, 180]],
+    color='red',
+    weight=1,
+    dash_array='5, 5',
+    opacity=0.6
+).add_to(m)
+
+# Prime Meridian: Line from -90 to +90 latitude at 0 longitude
+folium.PolyLine(
+    locations=[[-90, 0], [90, 0]],
+    color='red',
+    weight=1,
+    dash_array='5, 5',
+    opacity=0.6
 ).add_to(m)
 
 # Style banner + cursor
