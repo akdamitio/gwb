@@ -276,7 +276,7 @@ turf_js = f"""
             // Define the Esri basemap layer (but don’t add it yet)
             (function() {{
                 var basemap = L.tileLayer(
-                    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{{{z}}}}/{{{{y}}}}/{{{{x}}}}',
+                    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',
                     {{
                         attribution: 'Tiles © Esri',
                         detectRetina: true
