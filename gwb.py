@@ -9,6 +9,8 @@ import random
 from streamlit_javascript import st_javascript
 import time
 
+mode = 'impossible'
+
 st.set_page_config(layout="wide")
 
 
