@@ -11,10 +11,6 @@ from streamlit_javascript import st_javascript
 st.set_page_config(layout="wide")
 
 
-if not date_string:
-    st.info("Loading your game.")
-    st.stop()  # Stop the script here until date_string is available
-
 
 js_code = "new Date().toISOString().split('T')[0]"  # e.g., "2025-06-08"
 date_string = st_javascript(js_code=js_code)
