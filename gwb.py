@@ -191,6 +191,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
+    localStorage.clear();
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -398,9 +399,9 @@ turf_js = f"""
                                 gameOver = true;
                                 locked = true;
                                 localStorage.setItem(playedKey + "_score", "Suck")
-                                    if (!{map_var}.hasLayer(basemap)) {{
-                                        {map_var}.addLayer(basemap);
-                                    }}
+                                if (!{map_var}.hasLayer(basemap)) {{
+                                    {map_var}.addLayer(basemap);
+                                }}
 
 
                             }} else{{
