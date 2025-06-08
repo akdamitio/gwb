@@ -166,7 +166,16 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    //localStorage.clear();
+
+
+    const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
+    const storedDate = localStorage.getItem("lastPlayedDate");
+    
+    if (storedDate !== today) {{
+        localStorage.clear();  // or just remove specific keys if needed
+        localStorage.setItem("lastPlayedDate", today);
+    }}
+    
     var turfScript = document.createElement('script');
     turfScript.src = 'https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js';
     turfScript.onload = function() {{
