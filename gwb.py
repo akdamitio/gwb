@@ -7,6 +7,7 @@ from datetime import date
 import hashlib
 import random
 from streamlit_javascript import st_javascript
+import time
 
 st.set_page_config(layout="wide")
 
