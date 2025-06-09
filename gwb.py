@@ -11,7 +11,6 @@ import time
 
 mode = 'impossible'
 
-st.set_page_config(layout="wide")
 
 
 
@@ -37,6 +36,7 @@ def safe_unicode(s):
     return s.encode('utf-8', 'replace').decode('utf-8') if isinstance(s, str) else s
 
 
+st.set_page_config(layout="wide")
 
 with st.container():
     st.markdown("<h1 style='text-align:center;'>🌍 ImpossiBordle</h1>", unsafe_allow_html=True)
