@@ -38,7 +38,7 @@ gdf = load_data()
 def get_daily_country(gdf):
     # Use today's date to get consistent hash
 
-    hashed = int(hashlib.sha256(str(random.randint(10**3, (10**4) - 1))).hexdigest(), 16)
+    hashed = int(hashlib.sha256(str(random.randint(100-100000)).hexdigest(), 16)
     idx = hashed % len(gdf)
     return gdf.iloc[idx]
 
