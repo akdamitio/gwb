@@ -73,6 +73,13 @@ folium.PolyLine(
     opacity=0.6
 ).add_to(m)
 
+folium.PolyLine(
+    locations=[[45, -180], [45, 180]],
+    color='black',
+    weight=1.2,
+    opacity=0.6
+).add_to(m)
+
 
 for a in [-90, -60, -30, 30, 60, 90]:
     folium.PolyLine(
