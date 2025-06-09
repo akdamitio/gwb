@@ -69,37 +69,33 @@ b = r"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServ
 folium.PolyLine(
     locations=[[0, -180], [0, 180]],
     color='red',
-    weight=1,
-    dash_array='5, 5',
+    weight=1.2,
     opacity=0.6
 ).add_to(m)
+
+for a in [-90, -60, -30, 30, 60, 90]:
+    folium.PolyLine(
+        locations=[[a, -180], [a, 180]],
+        color='k',
+        weight=0.8,
+        opacity=0.6
+    ).add_to(m)
 
 # Prime Meridian: Line from -90 to +90 latitude at 0 longitude
 folium.PolyLine(
     locations=[[-90, 0], [90, 0]],
     color='red',
-    weight=1,
-    dash_array='5, 5',
+    weight=1.2,
     opacity=0.6
 ).add_to(m)
 
-# Prime Meridian: Line from -90 to +90 latitude at 0 longitude
-folium.PolyLine(
-    locations=[[-90, 180], [90, 180]],
-    color='red',
-    weight=1,
-    dash_array='5, 5',
-    opacity=0.6
-).add_to(m)
-
-# Prime Meridian: Line from -90 to +90 latitude at 0 longitude
-folium.PolyLine(
-    locations=[[-90, -180], [90, -180]],
-    color='red',
-    weight=1,
-    dash_array='5, 5',
-    opacity=0.6
-).add_to(m)
+for a in [-180, -150, -120, -90, -60, -30, 30, 60, 90, 120, 150, 180]:
+    folium.PolyLine(
+        locations=[[-90, a], [90, a]],
+        color='k',
+        weight=0.8,
+        opacity=0.6
+    ).add_to(m)
 
 # Style banner + cursor
 css = f"""
