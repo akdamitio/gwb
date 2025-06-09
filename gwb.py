@@ -271,12 +271,7 @@ turf_js = f"""
                 iconAnchor: [20, 20]
             }});        
 
-            // Define the Esri basemap layer (but don’t add it yet)
-            (function() {{
-                var basemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}});
-            }});
 
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}}).addTo({map_var})        
             // LocalStorage key
 
             const playedKey = "hasGuessed_" + new Date().toISOString().slice(0,10);
@@ -371,9 +366,8 @@ turf_js = f"""
                         localStorage.setItem(playedKey + "_score", guessCount);
                         locked = true;
                         updateBanner("Bingo | Guesses: " + guessCount);
-                        if (!{map_var}.hasLayer(basemap)) {{
-                            {map_var}.addLayer(basemap);
-                        }}
+                        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}}).addTo({map_var})        
+
                         if (!countryLayer) {{
                             countryLayer = L.geoJSON(countryGeoJSON, {{
                                 style: {{color: 'green', weight: 3, fillOpacity: 0.3}}
@@ -413,9 +407,8 @@ turf_js = f"""
                                 gameOver = true;
                                 locked = true;
                                 localStorage.setItem(playedKey + "_score", "Suck")
-                                if (!{map_var}.hasLayer(basemap)) {{
-                                    {map_var}.addLayer(basemap);
-                                }}
+                                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}}).addTo({map_var})        
+
 
 
                             }} else{{
