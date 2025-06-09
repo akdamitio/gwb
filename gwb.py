@@ -45,9 +45,8 @@ selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
 
 if(selected['SOVEREIGNT'] != selected_name):
-   selected_sov = f" ({selected['SOVEREIGNT']})"
-
-#selected_sov = safe_unicode(selected_sov)
+    selected_sov = f" ({selected['SOVEREIGNT']})"
+    selected_sov = safe_unicode(selected_sov)
 
 selected_name = safe_unicode(selected_name)
 
