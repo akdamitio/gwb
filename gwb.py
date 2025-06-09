@@ -43,6 +43,7 @@ def get_daily_country(gdf):
 
 selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
+selected_sov = ''
 
 if(selected['SOVEREIGNT'] != selected_name):
     selected_sov = f" ({selected['SOVEREIGNT']})"
