@@ -63,13 +63,7 @@ selected_geom = selected.geometry
 m = folium.Map(location=[20, 0], zoom_start=1, tiles=None)
 
 
-for a in [[[-90, -180], [90, -180]], [[-90, 180], [90, 180]], [[90, -180], [90, 180]], [[-90, -180], [-90, 180]]]:
-    folium.PolyLine(
-        locations=[a],
-        color='black',
-        weight=0.6,
-        opacity=0.7
-    ).add_to(m)
+
 
 # Add Esri tile layer
 folium.TileLayer(
@@ -77,6 +71,14 @@ folium.TileLayer(
     attr='Tiles © Esri',
     control=False
 ).add_to(m)
+
+for a in [[[-90, -180], [90, -180]], [[-90, 180], [90, 180]], [[90, -180], [90, 180]], [[-90, -180], [-90, 180]]]:
+    folium.PolyLine(
+        locations=a,
+        color='black',
+        weight=0.6,
+        opacity=0.7
+    ).add_to(m)
 
 # Style banner + cursor
 css = f"""
