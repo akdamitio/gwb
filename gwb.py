@@ -39,12 +39,12 @@ def safe_unicode(s):
 
 
 with st.container():
-    st.markdown("<h1 style='text-align:center;'>🌍 No Bordle - IMPOSSIBLE</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center;'>🌍 ImpossiBordle</h1>", unsafe_allow_html=True)
 gdf = load_data()
 
 def get_daily_country(gdf):
     # Use today's date to get consistent hash
-    today_str = f"{date_string}---{mode}"
+    today_str = f"{date_string}-{mode}"
     time.sleep(2)
     hashed = int(hashlib.sha256(today_str.encode()).hexdigest(), 16)
     idx = hashed % len(gdf)
@@ -210,7 +210,6 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    localStorage.clear();
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
