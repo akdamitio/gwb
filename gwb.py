@@ -9,12 +9,6 @@ import random
 from streamlit_javascript import st_javascript
 import time
 
-st.set_page_config(layout="wide")
-
-
-
-js_code = "new Date().toISOString().split('T')[0]"  # e.g., "2025-06-08"
-date_string = st_javascript(js_code=js_code)
 
 
 
@@ -35,6 +29,7 @@ def safe_unicode(s):
     return s.encode('utf-8', 'replace').decode('utf-8') if isinstance(s, str) else s
 
 
+st.set_page_config(layout="wide")
 
 with st.container():
     st.markdown("<h1 style='text-align:center;'>🌍 No Bordle</h1>", unsafe_allow_html=True)
@@ -42,9 +37,8 @@ gdf = load_data()
 
 def get_daily_country(gdf):
     # Use today's date to get consistent hash
-    today_str = date_string
-    time.sleep(2)
-    hashed = int(hashlib.sha256(today_str.encode()).hexdigest(), 16)
+
+    hashed = int(hashlib.sha256(str(random.randint())).hexdigest(), 16)
     idx = hashed % len(gdf)
     return gdf.iloc[idx]
 
@@ -160,7 +154,7 @@ css = f"""
     }}
         
 </style>
-<div id='guessBanner'>🎯 Find: \u0020 <strong>{selected_name}</strong></div>
+<div id='guessBanner'>🎯 <strong>{selected_name}</strong></div>
 <div><button id="lockButton">🔒 Lock In Guess</button></div>
 <div id="wrongGuessPopup"></div>
 
@@ -182,11 +176,9 @@ turf_js = f"""
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
     const storedDate = localStorage.getItem("lastPlayedDate");
-    
-    if (storedDate !== today) {{
-        localStorage.clear();  // or just remove specific keys if needed
-        localStorage.setItem("lastPlayedDate", today);
-    }}
+
+    localStorage.clear();  // or just remove specific keys if needed
+
     
     var turfScript = document.createElement('script');
     turfScript.src = 'https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js';
@@ -251,43 +243,7 @@ turf_js = f"""
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
 
-            if (savedScore === "Suck") {{
-                updateBanner("✅ You already played today. | Guesses: " + savedScore);
-                locked = true;
-                gameOver = true;
-                // Optionally re-show the country
-                countryLayer = L.geoJSON(countryGeoJSON, {{
-                    style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
-                }}).addTo({map_var});
 
-            }}
-
-            if (played) {{
-                updateBanner("✅ You already played today. | Guesses: " + savedScore);
-                locked = true;
-                gameOver = true;
-
-                // Optionally re-show the country
-                countryLayer = L.geoJSON(countryGeoJSON, {{
-                    style: {{ color: 'green', weight: 3, fillOpacity: 0.3 }}
-                }}).addTo({map_var});
-            }}
-
-
-            const reloadGuesses = () => {{
-                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
-                for (const [lat, lng] of stored) {{
-                    L.circleMarker([lat, lng], {{
-                        radius: 3,
-                        color: 'red',
-                        weight: 1,
-                        fillColor: 'red',
-                        fillOpacity: 0.6,
-                        className: 'guess-dot'
-                    }}).addTo({map_var});
-                }}
-            }};
-            reloadGuesses();
 
             {map_var}.on('click', function(e) {{
                 if(gameOver === false){{
