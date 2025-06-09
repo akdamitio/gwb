@@ -53,10 +53,12 @@ def get_daily_country(gdf):
 selected = get_daily_country(gdf)
 selected_name = selected['ADMIN'] if 'ADMIN' in selected else selected['name']
 selected_type = selected['TYPE']
-if(selected['SOVEREIGNT'] == 'Sovereign country'):
-   selected_type = ''
-elif(selected['SOVEREIGNT'] != selected_name):
-   selected_type = selected_type + f" [{selected['SOVEREIGNT']}]"
+selected_sov = ''
+
+if(selected['SOVEREIGNT'] != selected_name):
+    selected_sov = f" ({selected['SOVEREIGNT']})"
+    selected_sov = safe_unicode(selected_sov)
+    
 selected_name = safe_unicode(selected_name)
 
 selected_geom = selected.geometry
@@ -190,7 +192,7 @@ css = f"""
     }}
         
 </style>
-<div id='guessBanner'>🎯 Find: \u0020 <strong>{selected_name}</strong></div>
+<div id='guessBanner'>🎯 \u0020 <strong>{selected_name}{selected_sov}</strong></div>
 <div><button id="lockButton">🔒 Lock In Guess</button></div>
 <div id="wrongGuessPopup"></div>
 
