@@ -189,6 +189,8 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
+    localStorage.clear()
+
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -207,6 +209,32 @@ turf_js = f"""
         const lockBtn = document.getElementById("lockButton");
         var pt = 0
         const wrongGuessMessages = {js_messages};
+
+        let border;
+        if (countryGeoJSON.type === "Polygon") {{
+            border = turf.polygonToLine(countryGeoJSON);
+        }} else if (countryGeoJSON.type === "MultiPolygon") {{
+            border = turf.polygonToLine(countryGeoJSON);
+        }}
+
+        var minDistance = infinity
+        function showLosePopup() {{
+            const popup = document.createElement('div');
+            popup.innerText = `😓 Game Over! Closest you got: ${minDistance.toFixed(1)} miles from the border.`;
+            popup.style.position = 'fixed';
+            popup.style.top = '70px';
+            popup.style.left = '50%';
+            popup.style.transform = 'translateX(-50%)';
+            popup.style.background = 'rgba(0,0,0,0.85)';
+            popup.style.color = 'white';
+            popup.style.padding = '12px 20px';
+            popup.style.borderRadius = '10px';
+            popup.style.fontSize = '1em';
+            popup.style.zIndex = '9999';
+            popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+            document.body.appendChild(popup);
+        }}
+
 
         const saveGuess = (lat, lng) => {{
             const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
@@ -305,6 +333,12 @@ turf_js = f"""
                     tapCount = 1;
                     pt = turf.point([e.latlng.lng, e.latlng.lat]);
 
+                    const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                    if (distanceToBorder < minDistance) {{
+                        minDistance = distanceToBorder;
+                    }}
+
+
                     while (markers.length > 0) {{
                         markers[0].remove();
                     }}
@@ -384,6 +418,7 @@ turf_js = f"""
                                 gameOver = true;
                                 locked = true;
                                 localStorage.setItem(playedKey + "_score", "Suck")
+                                showLosePopup();
 
 
                             }} else{{
