@@ -403,7 +403,7 @@ turf_js = f"""
                                 radius: 3,
                                 color: 'red',
                                 fillColor: 'red',
-                                Opacity: 1
+                                fillOpacity: 1
                             }}).addTo({map_var});       
 
                             const messageIndex = guessCount - 1;
