@@ -220,7 +220,7 @@ turf_js = f"""
         let minDistance = Infinity;
         function showLosePopup() {{
             const popup = document.createElement('div');
-            popup.innerText = `😓 Game Over! Closest you got: ${{minDistance.toFixed(1)}} miles from the border.`;;
+            popup.innerText = `💩 You stink! Best guess: ${{minDistance.toFixed(0)}} miles from the border.`;;
             popup.style.position = 'fixed';
             popup.style.top = '70px';
             popup.style.left = '50%';
@@ -246,7 +246,7 @@ turf_js = f"""
             const popup = document.getElementById('wrongGuessPopup');
             if (!popup) return;
             popup.innerText = message;
-            popup.style.opacity = 0.7;
+            popup.style.opacity = 0.8;
             setTimeout(() => {{
                 popup.style.opacity = 0;
             }}, 3000);
@@ -319,9 +319,9 @@ turf_js = f"""
                     L.circleMarker([lat, lng], {{
                         radius: 3,
                         color: 'red',
-                        weight: 1,
+                        weight: 0,
                         fillColor: 'red',
-                        fillOpacity: 0.6,
+                        fillOpacity: 1,
                         className: 'guess-dot'
                     }}).addTo({map_var});
                 }}
@@ -403,7 +403,7 @@ turf_js = f"""
                                 radius: 3,
                                 color: 'red',
                                 fillColor: 'red',
-                                Opacity: 0.8
+                                Opacity: 1
                             }}).addTo({map_var});       
 
                             const messageIndex = guessCount - 1;
