@@ -220,7 +220,7 @@ turf_js = f"""
         let minDistance = Infinity;
         function showLosePopup() {{
             const popup = document.createElement('div');
-            popup.innerText = '😓 Game Over! Closest you got: {minDistance} miles from the border.';
+            popup.innerText = '😓 Game Over! Closest you got: ${minDistance.toFixed(1)} miles from the border.';
             popup.style.position = 'fixed';
             popup.style.top = '70px';
             popup.style.left = '50%';
