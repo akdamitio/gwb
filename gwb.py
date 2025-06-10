@@ -218,9 +218,9 @@ turf_js = f"""
         }}
 
         let minDistance = Infinity;
-        function showLosePopup(d) {{
+        function showLosePopup() {{
             const popup = document.createElement('div');
-            popup.innerText = '😓 Game Over! Closest you got: ${d.toFixed(1)} miles from the border.';
+            popup.innerText = '😓 Game Over! Closest you got: {minDistance} miles from the border.';
             popup.style.position = 'fixed';
             popup.style.top = '70px';
             popup.style.left = '50%';
@@ -418,7 +418,7 @@ turf_js = f"""
                                 gameOver = true;
                                 locked = true;
                                 localStorage.setItem(playedKey + "_score", "Suck")
-                                showLosePopup(minDistance);
+                                showLosePopup();
 
 
                             }} else{{
