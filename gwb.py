@@ -76,8 +76,8 @@ for a in [[[-90, -180], [90, -180]], [[-90, 180], [90, 180]], [[90, -180], [90, 
     folium.PolyLine(
         locations=a,
         color='black',
-        weight=0.6,
-        opacity=0.7
+        weight=1.2,
+        opacity=1
     ).add_to(m)
 
 # Style banner + cursor
@@ -189,7 +189,6 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    localStorage.clear()
 
 
 
