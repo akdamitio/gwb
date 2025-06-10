@@ -217,7 +217,7 @@ turf_js = f"""
             border = turf.polygonToLine(countryGeoJSON);
         }}
 
-        var minDistance = Infinity;
+        let minDistance = Infinity;
         function showLosePopup() {{
             const popup = document.createElement('div');
             popup.innerText = `😓 Game Over! Closest you got: ${minDistance.toFixed(1)} miles from the border.`;
