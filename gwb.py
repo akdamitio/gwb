@@ -318,9 +318,9 @@ turf_js = f"""
                 for (const [lat, lng] of stored) {{
                     L.circleMarker([lat, lng], {{
                         radius: 3,
-                        color: 'purple',
+                        color: '#d000ff',
                         weight: 0,
-                        fillColor: 'purple',
+                        fillColor: '#d000ff',
                         fillOpacity: 1,
                         className: 'guess-dot'
                     }}).addTo({map_var});
@@ -401,8 +401,8 @@ turf_js = f"""
                             // Add marker at clicked location
                             L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                                 radius: 3,
-                                color: 'purple',
-                                fillColor: 'purple',
+                                color: '#d000ff',
+                                fillColor: '#d000ff',
                                 fillOpacity: 1
                             }}).addTo({map_var});       
 
