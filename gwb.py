@@ -351,6 +351,11 @@ turf_js = f"""
                     tapCount = 1;
                     pt = turf.point([e.latlng.lng, e.latlng.lat]);
 
+                    const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                    if (distanceToBorder < minDistance) {{
+                        minDistance = distanceToBorder;
+                    }}
+
                     while (markers.length > 0) {{
                         markers[0].remove();
                     }}
