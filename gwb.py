@@ -82,7 +82,7 @@ for a in [-90, -60, -30, 30, 60, 90]:
         locations=[[a, -180], [a, 180]],
         color='black',
         weight=0.5,
-        opacity=0.6
+        opacity=1
     ).add_to(m)
 
 # Prime Meridian: Line from -90 to +90 latitude at 0 longitude
@@ -90,7 +90,7 @@ folium.PolyLine(
     locations=[[-90, 0], [90, 0]],
     color='red',
     weight=1.2,
-    opacity=0.6
+    opacity=1
 ).add_to(m)
 
 for a in [-180, -150, -120, -90, -60, -30, 30, 60, 90, 120, 150, 180]:
@@ -98,7 +98,7 @@ for a in [-180, -150, -120, -90, -60, -30, 30, 60, 90, 120, 150, 180]:
         locations=[[-90, a], [90, a]],
         color='black',
         weight=0.5,
-        opacity=0.6
+        opacity=1
     ).add_to(m)
 
 # Style banner + cursor
@@ -210,6 +210,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
+    localStorage.clear()
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -245,6 +246,30 @@ turf_js = f"""
             }}, 3000);
         }};
 
+        let border;
+        if (countryGeoJSON.type === "Polygon") {{
+            border = turf.polygonToLine(countryGeoJSON);
+        }} else if (countryGeoJSON.type === "MultiPolygon") {{
+            border = turf.polygonToLine(countryGeoJSON);
+        }}
+
+        let minDistance = Infinity;
+        function showLosePopup() {{
+            const popup = document.createElement('div');
+            popup.innerText = `💩 You stink! Best guess: ${{minDistance.toFixed(0)}} miles from the border.`;;
+            popup.style.position = 'fixed';
+            popup.style.top = '70px';
+            popup.style.left = '50%';
+            popup.style.transform = 'translateX(-50%)';
+            popup.style.background = 'rgba(0,0,0,0.85)';
+            popup.style.color = 'white';
+            popup.style.padding = '12px 20px';
+            popup.style.borderRadius = '10px';
+            popup.style.fontSize = '1em';
+            popup.style.zIndex = '9999';
+            popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+            document.body.appendChild(popup);
+        }}
 
 
         const markers = document.getElementsByClassName("plus-marker");
@@ -409,6 +434,7 @@ turf_js = f"""
                                 locked = true;
                                 localStorage.setItem(playedKey + "_score", "Suck")
                                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}}).addTo({map_var})        
+                                showLosePopup();
 
 
 
