@@ -189,7 +189,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-
+    localStorage.clear()
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
