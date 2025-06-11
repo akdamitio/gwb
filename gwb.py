@@ -328,7 +328,7 @@ turf_js = f"""
             reloadGuesses();
 
             {map_var}.on('click', function(e) {{
-                if(gameover === false){{
+                if(gameOver === false){{
                     tapCount = 1;
                     pt = turf.point([e.latlng.lng, e.latlng.lat]);
 
