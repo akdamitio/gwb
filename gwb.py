@@ -350,6 +350,9 @@ turf_js = f"""
                 if(gameOver === false){{
                     tapCount = 1;
                     pt = turf.point([e.latlng.lng, e.latlng.lat]);
+                    
+                    L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});
+                    
 
                     const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                     if (distanceToBorder < minDistance) {{
@@ -360,7 +363,6 @@ turf_js = f"""
                         markers[0].remove();
                     }}
 
-                    L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});
                 
                 }}
             }});
