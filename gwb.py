@@ -171,7 +171,7 @@ css = f"""
     }}
         
 </style>
-<div id='guessBanner'>🎯 Find: \u0020 <strong>{selected_name}</strong></div>
+<div id='guessBanner'>🎯<strong>{selected_name}</strong></div>
 <div><button id="lockButton">🔒 Lock In Guess</button></div>
 <div id="wrongGuessPopup"></div>
 
