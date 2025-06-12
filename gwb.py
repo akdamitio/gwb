@@ -121,7 +121,7 @@ css = f"""
         z-index: 9999;
         pointer-events: none;
         box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        height: 50px;              /* 👈 Fixed height */
+        /*height: 50px; */             /* 👈 Fixed height */
         display: flex;             /* 👈 Center vertically */
         align-items: center;
         justify-content: center;
