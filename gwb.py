@@ -146,7 +146,8 @@ css = f"""
       justify-content: center;
       align-items: center;
       pointer-events: none;
-      font-weight: 200
+      font-weight: 200;
+      cursor: crosshair;
     }}
 
 
