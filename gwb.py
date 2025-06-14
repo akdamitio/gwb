@@ -250,9 +250,7 @@ turf_js = f"""
 
 
         border = turf.polygonToLine(countryGeoJSON);
-            if(countryGeoJSON.type === "MultiPolygon"){{
-            console.log(countryGeoJSON);
-        }};
+
         
 
         let minDistance = Infinity;
@@ -378,8 +376,17 @@ turf_js = f"""
                     while (markers.length > 0) {{
                         markers[0].remove();
                     }}
+                    
 
-
+                    if (border.type === "FeatureCollection") {{
+                        border.features.forEach(f => {{
+                            console.log(f);
+                            const dist = turf.distance(pt, f.geometry, {{ units: "miles" }});
+                            if (dist < minDistance) {{
+                                minDistance = dist;
+                            }}
+                        }});
+                        
                     const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                     if (distanceToBorder < minDistance) {{
                         minDistance = distanceToBorder;
