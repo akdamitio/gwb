@@ -386,6 +386,7 @@ turf_js = f"""
                                 minDistance = dist;
                             }}
                         }});
+                    }};
 
                         
                     const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
