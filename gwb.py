@@ -247,11 +247,9 @@ turf_js = f"""
         }};
 
         let border;
-        if (countryGeoJSON.type === "Polygon") {{
-            border = turf.polygonToLine(countryGeoJSON);
-        }} else if (countryGeoJSON.type === "MultiPolygon") {{
-            border = turf.polygonToLine(countryGeoJSON);
-        }}
+        
+        border = turf.polygonToLine(countryGeoJSON);
+        
 
         let minDistance = Infinity;
         function showLosePopup() {{
@@ -356,22 +354,7 @@ turf_js = f"""
                         markers[0].remove();
                     }}
                     
-                    L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});
-                    
-                    if (border.type === "FeatureCollection") {{
-                        border.features.forEach(f => {{
-                            const dist = turf.distance(pt, f.geometry, {{ units: "miles" }});
-                            if (dist < minDistance) {{
-                                const minDistance = dist;
-                            }}
-                        }});
-                    }} else {{
-                        const distanceToBorder = turf.distance(pt, border, {{ units: "miles" }});
-                        if (distanceToBorder < minDistance) {{
-                            minDistance = distanceToBorder;
-                        }}
-                    }}
-                    
+                    L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});                   
 
 
 
@@ -390,6 +373,12 @@ turf_js = f"""
 
                     while (markers.length > 0) {{
                         markers[0].remove();
+                    }}
+
+
+                    const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                    if (distanceToBorder < minDistance) {{
+                        minDistance = distanceToBorder;
                     }}
                     
 
