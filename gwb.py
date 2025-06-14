@@ -351,6 +351,7 @@ turf_js = f"""
                     localStorage.setItem(playedKey + "_guesses", guessCount);
                     saveGuess(pt.geometry.coordinates[1], pt.geometry.coordinates[0]);
 
+                    console.log(pt);
                     const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                     if (distanceToBorder < minDistance) {{
                         minDistance = distanceToBorder;
