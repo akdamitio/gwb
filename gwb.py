@@ -247,8 +247,11 @@ turf_js = f"""
         }};
 
         let border;
-        
-        border = turf.polygonToLine(countryGeoJSON.coordinates);
+
+        if(countryGeoJSON.type === "MultiPolygon"){{
+            console.log('multi');
+        }};
+        border = turf.polygonToLine(countryGeoJSON);
         
 
         let minDistance = Infinity;
