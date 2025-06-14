@@ -211,9 +211,6 @@ turf_js = f"""
 
         let border;
         border = turf.polygonToLine(countryGeoJSON);
-        if(countryGeoJSON.type === "Polygon"){{
-            console.log(border);
-        }};
 
         let minDistance = Infinity;
         function showLosePopup() {{
@@ -351,11 +348,20 @@ turf_js = f"""
                     localStorage.setItem(playedKey + "_guesses", guessCount);
                     saveGuess(pt.geometry.coordinates[1], pt.geometry.coordinates[0]);
 
-                    console.log(pt);
-                    const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                    if (distanceToBorder < minDistance) {{
-                        minDistance = distanceToBorder;
-                    }}
+                    if (border.type === "FeatureCollection") {{
+                        border.features.forEach(f => {{
+                            const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
+                            if (dist < minDistance) {{
+                                minDistance = dist;
+                            }}
+                        }});
+                    }}else{{
+                        
+                        const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                        if (distanceToBorder < minDistance) {{
+                            minDistance = distanceToBorder;
+                        }}
+                    }};
 
                     tapCount = 0
 
