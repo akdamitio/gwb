@@ -212,7 +212,7 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
         if(countryGeoJSON.type === "Polygon"){{
-            console.log(countryGeoJSON);
+            console.log(border);
         }};
 
         let minDistance = Infinity;
