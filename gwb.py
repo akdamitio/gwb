@@ -189,7 +189,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    //localStorage.clear()
+    localStorage.clear()
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -213,7 +213,7 @@ turf_js = f"""
         if (countryGeoJSON.type === "Polygon") {{
             border = turf.polygonToLine(countryGeoJSON);
         }} else if (countryGeoJSON.type === "MultiPolygon") {{
-            border = turf.polygonToLine(countryGeoJSON);
+            border = turf.multipolygonToLine(countryGeoJSON);
         }}
 
         let minDistance = Infinity;
@@ -297,6 +297,7 @@ turf_js = f"""
                 countryLayer = L.geoJSON(countryGeoJSON, {{
                     style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
                 }}).addTo({map_var});
+
 
             }}
 
