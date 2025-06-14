@@ -248,7 +248,7 @@ turf_js = f"""
 
         let border;
         
-        border = turf.polygonToLine(countryGeoJSON);
+        border = turf.polygonToLine(countryGeoJSON.coordinates);
         
 
         let minDistance = Infinity;
@@ -375,7 +375,6 @@ turf_js = f"""
                         markers[0].remove();
                     }}
 
-                    console.log('border':border);
 
                     const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                     if (distanceToBorder < minDistance) {{
