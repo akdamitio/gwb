@@ -338,10 +338,6 @@ turf_js = f"""
                     
                     L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});
 
-                    const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                    if (distanceToBorder < minDistance) {{
-                        minDistance = distanceToBorder;
-                    }}
 
 
 
@@ -354,6 +350,11 @@ turf_js = f"""
                     guessCount += 1
                     localStorage.setItem(playedKey + "_guesses", guessCount);
                     saveGuess(pt.geometry.coordinates[1], pt.geometry.coordinates[0]);
+
+                    const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                    if (distanceToBorder < minDistance) {{
+                        minDistance = distanceToBorder;
+                    }}
 
                     tapCount = 0
 
