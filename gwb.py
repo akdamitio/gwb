@@ -251,7 +251,7 @@ turf_js = f"""
 
         border = turf.polygonToLine(countryGeoJSON);
             if(countryGeoJSON.type === "MultiPolygon"){{
-            console.log(countryGeoJSON);
+            console.log(countryGeoJSON.coordinates);
         }};
         
 
