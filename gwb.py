@@ -389,12 +389,13 @@ turf_js = f"""
                             }}
                         }});
                     }};
-
+                    else{{
                         
-                    const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                    if (distanceToBorder < minDistance) {{
-                        minDistance = distanceToBorder;
-                    }}
+                        const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                        if (distanceToBorder < minDistance) {{
+                            minDistance = distanceToBorder;
+                        }}
+                    }};
                     
 
                     let shape;
