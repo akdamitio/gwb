@@ -210,11 +210,10 @@ turf_js = f"""
         const wrongGuessMessages = {js_messages};
 
         let border;
-        if (countryGeoJSON.type === "Polygon") {{
-            border = turf.polygonToLine(countryGeoJSON);
-        }} else if (countryGeoJSON.type === "MultiPolygon") {{
-            border = turf.multipolygonToLine(countryGeoJSON);
-        }}
+        border = turf.polygonToLine(countryGeoJSON);
+            if(countryGeoJSON.type === "Polygon"){{
+            console.log(countryGeoJSON);
+        }};
 
         let minDistance = Infinity;
         function showLosePopup() {{
