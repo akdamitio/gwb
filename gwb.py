@@ -250,7 +250,6 @@ turf_js = f"""
 
 
         border = turf.polygonToLine(countryGeoJSON);
-        console.log(border.features[1]);
 
 
         
