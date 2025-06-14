@@ -380,7 +380,7 @@ turf_js = f"""
 
                     if (border.type === "FeatureCollection") {{
                         border.features.forEach(f => {{
-                            console.log(f);
+                            console.log(border.features[1]);
                             const dist = turf.distance(pt, f.geometry, {{ units: "miles" }});
                             if (dist < minDistance) {{
                                 minDistance = dist;
