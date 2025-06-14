@@ -377,7 +377,7 @@ turf_js = f"""
 
 
                     const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                    console.log(border);
+                    console.log('border':border);
                     if (distanceToBorder < minDistance) {{
                         minDistance = distanceToBorder;
                     }}
