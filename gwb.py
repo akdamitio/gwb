@@ -378,7 +378,7 @@ turf_js = f"""
                         markers[0].remove();
                     }}
                     
-                    console.log(borders);
+                    console.log(border);
 
                     if (border.type === "FeatureCollection") {{
                         border.features.forEach(f => {{
