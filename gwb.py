@@ -378,10 +378,10 @@ turf_js = f"""
                         markers[0].remove();
                     }}
                     
-                    
+                    console.log(borders);
+
                     if (border.type === "FeatureCollection") {{
                         border.features.forEach(f => {{
-                            console.log(f);
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
                             if (dist < minDistance) {{
                                 minDistance = dist;
