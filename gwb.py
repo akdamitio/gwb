@@ -391,12 +391,12 @@ turf_js = f"""
 
                         if (border.geometry.type === "MultiLineString") {{
                             border.geometry.forEach(g => {{
-                                console.log(g)
+                                console.log(g);
                                 const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
                                 if (dist < minDistance) {{
                                     minDistance = dist;
                                 }}
-                            }}
+                            }});
                         }} else{{
                         const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                         if (distanceToBorder < minDistance) {{
