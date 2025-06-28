@@ -383,6 +383,8 @@ turf_js = f"""
             }});
 
             lockButton.addEventListener("click", function() {{
+                let distanceToBorder = Infinity
+
                 if(tapCount === 1) {{
                     guessCount += 1
                     localStorage.setItem(playedKey + "_guesses", guessCount);
