@@ -303,7 +303,7 @@ turf_js = f"""
             const savedScore = localStorage.getItem(playedKey + "_score");
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
-            totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance")
+            totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
 
             if (savedScore === "Suck") {{
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
