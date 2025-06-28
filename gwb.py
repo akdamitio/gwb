@@ -78,18 +78,7 @@ folium.TileLayer(
     control=False
 ).add_to(m)
 
-smooth_zoom_js = """
-<script>
-    var originalInit = L.Map.prototype.initialize;
-    L.Map.prototype.initialize = function (id, options) {
-        options.zoomSnap = 0;     // allow fractional zoom
-        options.zoomDelta = 0.1;  // small zoom steps for smooth experience
-        return originalInit.call(this, id, options);
-    };
-</script>
-"""
 
-m.get_root().html.add_child(Element(smooth_zoom_js))
 
 for a in [[[-90, -180], [90, -180]], [[-90, 180], [90, 180]], [[90, -180], [90, 180]], [[-90, -180], [-90, 180]]]:
     folium.PolyLine(
