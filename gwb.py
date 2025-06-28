@@ -390,6 +390,7 @@ turf_js = f"""
 
                     if (border.type === "FeatureCollection") {{
                         let distanceToBorder = Infinity
+                        console.log("a");
                         border.features.forEach(f => {{
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
                             if (dist < distanceToBorder) {{
@@ -399,6 +400,8 @@ turf_js = f"""
                     }}else{{
 
                         if (border.geometry.type === "MultiLineString") {{
+                            console.log("b");
+
                             let distanceToBorder = Infinity
 
                             border.geometry.coordinates.forEach(g => {{
@@ -409,9 +412,9 @@ turf_js = f"""
                                 }}
                             }});
                         }} else{{
-                            const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                            console.log(distanceToBorder);
+                            console.log("c");
 
+                            const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                         }}
                     }};
 
