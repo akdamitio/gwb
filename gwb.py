@@ -64,7 +64,29 @@ selected_name = safe_unicode(selected_name)
 selected_geom = selected.geometry
 
 # Build HTML-compatible map
-m = folium.Map(location=[20, 0], zoom_start=1, tiles=None)
+m = folium.Map(
+    location=[20, 0],
+    zoom_start=3,
+    tiles=None,
+    control_scale=True,
+    zoom_control=True,
+    prefer_canvas=True
+)
+
+
+smooth_zoom_js = """
+<script>
+    var originalInit = L.Map.prototype.initialize;
+    L.Map.prototype.initialize = function (id, options) {
+        options.zoomSnap = 0;     // allow fractional zoom
+        options.zoomDelta = 0.1;  // small zoom steps for smooth experience
+        return originalInit.call(this, id, options);
+    };
+</script>
+"""
+
+m.get_root().html.add_child(Element(smooth_zoom_js))
+
 b = r"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 
 # Equator: Line from -180 to +180 longitude at 0 latitude
