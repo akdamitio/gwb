@@ -397,6 +397,7 @@ turf_js = f"""
                                 distanceToBorder = dist;
                             }}
                         }});
+                        console.log(distanceToBorder);
                     }}else{{
 
                         if (border.geometry.type === "MultiLineString") {{
