@@ -66,7 +66,7 @@ selected_geom = selected.geometry
 # Build HTML-compatible map
 m = folium.Map(
     location=[20, 0],
-    zoom_start=1,
+    zoom_start=0.8,
     tiles=None,
     control_scale=True,
     zoom_control=True,
