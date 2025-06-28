@@ -372,7 +372,7 @@ turf_js = f"""
             {map_var}.on('click', function(e) {{
                 if(gameOver === false){{
 
-                    if (Math.abs(e.latlng.lng)) {{
+                    if (Math.abs(e.latlng.lng) > 180) {{
                     
                         tapCount = 1;
                         pt = turf.point([e.latlng.lng, e.latlng.lat]);
