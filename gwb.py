@@ -325,20 +325,23 @@ turf_js = f"""
             reloadGuesses();
 
             {map_var}.on('click', function(e) {{
+            
                 if(gameOver === false){{
-                    tapCount = 1;
-                    pt = turf.point([e.latlng.lng, e.latlng.lat]);
+                    if (Math.abs(e.latlng.lng) < 180) {{
                     
-                    while (markers.length > 0) {{
-                        markers[0].remove();
+                        tapCount = 1;
+                        pt = turf.point([e.latlng.lng, e.latlng.lat]);
+                        
+                        while (markers.length > 0) {{
+                            markers[0].remove();
+                        }}
+                        
+                        L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});                   
+
+
+
+
                     }}
-                    
-                    L.marker([e.latlng.lat, e.latlng.lng], {{ icon: plusIcon }}).addTo({map_var});
-
-
-
-
-                
                 }}
             }});
 
