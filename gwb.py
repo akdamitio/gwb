@@ -410,6 +410,7 @@ turf_js = f"""
                             }});
                         }} else{{
                             const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                            console.log(distanceToBorder);
 
                         }}
                     }};
