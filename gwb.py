@@ -60,7 +60,28 @@ selected_name = safe_unicode(selected_name)
 selected_geom = selected.geometry
 
 # Build HTML-compatible map
-m = folium.Map(location=[20, 0], zoom_start=1, tiles=None)
+m = folium.Map(
+    location=[20, 0],
+    zoom_start=1,
+    tiles=None,
+    zoom_control=True,
+    prefer_canvas=True
+)
+
+
+smooth_zoom_js = """
+<script>
+    var originalInit = L.Map.prototype.initialize;
+    L.Map.prototype.initialize = function (id, options) {
+        options.zoomSnap = 0;     // allow fractional zoom
+        options.zoomDelta = 0.1;  // small zoom steps for smooth experience
+        return originalInit.call(this, id, options);
+    };
+</script>
+"""
+
+m.get_root().html.add_child(Element(smooth_zoom_js))
+
 
 
 
@@ -116,7 +137,7 @@ css = f"""
         pointer-events: none;
     }}
     .star-marker::before {{
-        content: "★";        
+        content: "✦";        
     }}
 
     .plus-marker {{
@@ -212,10 +233,10 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
 
-        let minDistance = Infinity;
+        let totalDistance = 0;
         function showLosePopup() {{
             const popup = document.createElement('div');
-            popup.innerText = `💩 You stink! Best guess: ${{minDistance.toFixed(0)}} miles from the border.`;;
+            popup.innerText = `💩 You stink! Average proximity: ${{(totalDistance/6).toFixed(0)}} miles from the border.`;;
             popup.style.position = 'fixed';
             popup.style.top = '70px';
             popup.style.left = '50%';
@@ -284,11 +305,14 @@ turf_js = f"""
             const savedScore = localStorage.getItem(playedKey + "_score");
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+            totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance")
 
             if (savedScore === "Suck") {{
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
                 gameOver = true;
+                showLosePopup();
+
                 // Optionally re-show the country
                 countryLayer = L.geoJSON(countryGeoJSON, {{
                     style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
@@ -297,16 +321,7 @@ turf_js = f"""
 
             }}
 
-            if (played) {{
-                updateBanner("✅ You already played today. | Guesses: " + savedScore);
-                locked = true;
-                gameOver = true;
 
-                // Optionally re-show the country
-                countryLayer = L.geoJSON(countryGeoJSON, {{
-                    style: {{ color: 'green', weight: 3, fillOpacity: 0.3 }}
-                }}).addTo({map_var});
-            }}
 
 
             const reloadGuesses = () => {{
@@ -324,12 +339,35 @@ turf_js = f"""
             }};
             reloadGuesses();
 
+
+            if (played) {{
+                updateBanner("✅ You already played today. | Guesses: " + savedScore);
+                locked = true;
+                gameOver = true;
+
+                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
+
+
+                L.marker([stored[stored.length - 1][1], [stored[stored.length - 1][0]], {{
+                    icon: L.divIcon({{
+                        className: 'star-marker',
+                        iconSize: [20, 20],
+                        iconAnchor: [10,10]
+
+                    }})
+                }}).addTo({map_var});
+
+                // Optionally re-show the country
+                countryLayer = L.geoJSON(countryGeoJSON, {{
+                    style: {{ color: 'green', weight: 3, fillOpacity: 0.3 }}
+                }}).addTo({map_var});
+            }}
+
             {map_var}.on('click', function(e) {{
             
                 if(gameOver === false){{
                     if (Math.abs(e.latlng.lng) < 180) {{
 
-                        console.log(e.latlng.lng, e.latlng.lat)
                         tapCount = 1;
                         pt = turf.point([e.latlng.lng, e.latlng.lat]);
                         
@@ -353,29 +391,34 @@ turf_js = f"""
                     saveGuess(pt.geometry.coordinates[1], pt.geometry.coordinates[0]);
 
                     if (border.type === "FeatureCollection") {{
+                        let distanceToBorder = Infinity
                         border.features.forEach(f => {{
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
-                            if (dist < minDistance) {{
-                                minDistance = dist;
+                            if (dist < distanceToBorder) {{
+                                distanceToBorder = dist;
                             }}
                         }});
                     }}else{{
 
                         if (border.geometry.type === "MultiLineString") {{
+                            let distanceToBorder = Infinity
+
                             border.geometry.coordinates.forEach(g => {{
                                 console.log(g);
                                 const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
-                                if (dist < minDistance) {{
-                                    minDistance = dist;
+                                if (dist < distanceToBorder) {{
+                                    distanceToBorder = dist;
                                 }}
                             }});
                         }} else{{
                         const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                        if (distanceToBorder < minDistance) {{
-                            minDistance = distanceToBorder;
-                        }}
+
                         }}
                     }};
+
+                    totalDistance = totalDistance + distanceToBorder
+                    localStorage.setItem(playedKey + "_totalDistance", totalDistance)
+
 
                     tapCount = 0
 
