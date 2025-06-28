@@ -69,6 +69,15 @@ m = folium.Map(
 )
 
 
+
+
+# Add Esri tile layer
+folium.TileLayer(
+    tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr='Tiles © Esri',
+    control=False
+).add_to(m)
+
 smooth_zoom_js = """
 <script>
     var originalInit = L.Map.prototype.initialize;
@@ -81,17 +90,6 @@ smooth_zoom_js = """
 """
 
 m.get_root().html.add_child(Element(smooth_zoom_js))
-
-
-
-
-
-# Add Esri tile layer
-folium.TileLayer(
-    tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attr='Tiles © Esri',
-    control=False
-).add_to(m)
 
 for a in [[[-90, -180], [90, -180]], [[-90, 180], [90, 180]], [[90, -180], [90, 180]], [[-90, -180], [-90, 180]]]:
     folium.PolyLine(
