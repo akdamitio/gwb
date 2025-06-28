@@ -328,7 +328,8 @@ turf_js = f"""
             
                 if(gameOver === false){{
                     if (Math.abs(e.latlng.lng) < 180) {{
-                    
+
+                        console.log(e.latlng.lng, e.latlng.lat)
                         tapCount = 1;
                         pt = turf.point([e.latlng.lng, e.latlng.lat]);
                         
