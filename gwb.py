@@ -345,7 +345,7 @@ turf_js = f"""
 
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
 
-
+                console.log(stored[stored.length - 1][0], stored[stored.length - 1][1]);
                 L.marker([stored[stored.length - 1][0], stored[stored.length - 1][1]], {{
                     icon: L.divIcon({{
                         className: 'star-marker',
