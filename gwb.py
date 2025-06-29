@@ -420,6 +420,7 @@ turf_js = f"""
                             const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                         }}
                     }};
+                    console.log(distanceToBorder);
 
                     totalDistance = totalDistance + distanceToBorder
                     localStorage.setItem(playedKey + "_totalDistance", totalDistance)
