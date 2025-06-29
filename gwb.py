@@ -391,7 +391,6 @@ turf_js = f"""
                     saveGuess(pt.geometry.coordinates[1], pt.geometry.coordinates[0]);
 
                     if (border.type === "FeatureCollection") {{
-                        let distanceToBorder = Infinity
                         console.log("a");
                         border.features.forEach(f => {{
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
@@ -405,7 +404,6 @@ turf_js = f"""
                         if (border.geometry.type === "MultiLineString") {{
                             console.log("b");
 
-                            let distanceToBorder = Infinity
 
                             border.geometry.coordinates.forEach(g => {{
                                 console.log(g);
@@ -417,7 +415,7 @@ turf_js = f"""
                         }} else{{
                             console.log("c");
 
-                            const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                            distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                         }}
                     }};
                     console.log(distanceToBorder);
