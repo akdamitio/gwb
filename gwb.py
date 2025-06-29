@@ -305,10 +305,23 @@ turf_js = f"""
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
             totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
 
+            let Dist = 0;
+
             if (savedScore === "Suck") {{
+
+                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
+                
+                for (const [lat, lng] of stored) {{
+                    const pt = turf.point([lng, lat]);
+
+                    d = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                    Dist = Dist + d
+                    totalDistance = Dist;
+                }}
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
                 gameOver = true;
+                
                 showLosePopup();
 
                 // Optionally re-show the country
