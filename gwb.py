@@ -328,7 +328,7 @@ turf_js = f"""
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
             totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
 
-            let distanceToBorder = 0
+            var distanceToBorder = Infinity
             if (savedScore === "Suck") {{
 
 
@@ -339,11 +339,11 @@ turf_js = f"""
                 
                     if (border.type === "FeatureCollection") {{
                         console.log("a");
-                        console.log(pt);
+                        //console.log(pt);
 
                         border.features.forEach(f => {{
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
-                            console.log(dist);
+                            //console.log(dist);
 
                             if (dist < distanceToBorder) {{
                                 distanceToBorder = dist;
@@ -353,7 +353,7 @@ turf_js = f"""
                     }}else{{
     
                         if (border.geometry.type === "MultiLineString") {{
-                            console.log("b");
+                            //console.log("b");
     
     
                             border.geometry.coordinates.forEach(g => {{
