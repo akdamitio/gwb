@@ -316,7 +316,7 @@ turf_js = f"""
 
                     d = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
                     Dist = Dist + d
-                    totalDistance = Dist;
+                totalDistance = Dist;
                 }}
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
