@@ -331,6 +331,42 @@ turf_js = f"""
             
             if (savedScore === "Suck") {{
 
+                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
+                for (const [lat, lng] of stored) {{
+
+                    pt = turf.point([lng, lat])
+                
+                    if (border.type === "FeatureCollection") {{
+                        console.log("a");
+                        border.features.forEach(f => {{
+                            const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
+                            if (dist < distanceToBorder) {{
+                                distanceToBorder = dist;
+                            }}
+                        }});
+                        console.log(distanceToBorder);
+                    }}else{{
+    
+                        if (border.geometry.type === "MultiLineString") {{
+                            console.log("b");
+    
+    
+                            border.geometry.coordinates.forEach(g => {{
+                                console.log(g);
+                                const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
+                                if (dist < distanceToBorder) {{
+                                    distanceToBorder = dist;
+                                }}
+                            }});
+                        }} else{{
+                            console.log("c");
+    
+                            distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                        }}
+                    }};
+                    console.log(distanceToBorder);
+                }};
+                
                 
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
