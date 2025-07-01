@@ -254,7 +254,7 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
 
-        let totalDistance = 0;
+        var distanceToBorder = Infinity;
         function showLosePopup() {{
             const popup = document.createElement('div');
             popup.innerText = `💩 You stink! Average proximity: ${{(distanceToBorder).toFixed(0)}} miles from the border.`;;
@@ -328,7 +328,6 @@ turf_js = f"""
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
             totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
 
-            var distanceToBorder = Infinity
             if (savedScore === "Suck") {{
 
 
