@@ -257,7 +257,7 @@ turf_js = f"""
         let totalDistance = 0;
         function showLosePopup() {{
             const popup = document.createElement('div');
-            popup.innerText = `💩 You stink! Average proximity: ${{(distancetoBorder).toFixed(0)}} miles from the border.`;;
+            popup.innerText = `💩 You stink! Average proximity: ${{(distanceToBorder).toFixed(0)}} miles from the border.`;;
             popup.style.position = 'fixed';
             popup.style.top = '70px';
             popup.style.left = '50%';
