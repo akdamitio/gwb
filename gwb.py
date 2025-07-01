@@ -157,7 +157,7 @@ css = f"""
         pointer-events: none;
     }}
     .star-marker::before {{
-        content: "★";        
+        content: "✦";        
     }}
 
     .plus-marker {{
