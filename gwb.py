@@ -328,10 +328,9 @@ turf_js = f"""
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
             totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
 
-            
+            let distanceToBorder = 0
             if (savedScore === "Suck") {{
 
-                var distanceToBorder = 0
 
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
