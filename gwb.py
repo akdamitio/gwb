@@ -340,6 +340,8 @@ turf_js = f"""
                 
                     if (border.type === "FeatureCollection") {{
                         console.log("a");
+                        console.log(pt);
+
                         border.features.forEach(f => {{
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
                             if (dist < distanceToBorder) {{
