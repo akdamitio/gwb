@@ -231,7 +231,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    // localStorage.clear()
+    //localStorage.clear()
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -248,8 +248,30 @@ turf_js = f"""
         var countryGeoJSON = {geojson_str};
         var guessCount = 0;
         const lockBtn = document.getElementById("lockButton");
-        var pt = 0;
+        var pt = 0
         const wrongGuessMessages = {js_messages};
+
+        let border;
+        border = turf.polygonToLine(countryGeoJSON);
+
+        let totalDistance = 0;
+        function showLosePopup() {{
+            const popup = document.createElement('div');
+            popup.innerText = `💩 You stink! Average proximity: ${{(totalDistance/6).toFixed(0)}} miles from the border.`;;
+            popup.style.position = 'fixed';
+            popup.style.top = '70px';
+            popup.style.left = '50%';
+            popup.style.transform = 'translateX(-50%)';
+            popup.style.background = 'rgba(0,0,0,0.85)';
+            popup.style.color = 'white';
+            popup.style.padding = '12px 20px';
+            popup.style.borderRadius = '10px';
+            popup.style.fontSize = '1em';
+            popup.style.zIndex = '9999';
+            popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+            document.body.appendChild(popup);
+        }}
+
 
         const saveGuess = (lat, lng) => {{
             const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
@@ -266,33 +288,6 @@ turf_js = f"""
                 popup.style.opacity = 0;
             }}, 3000);
         }};
-
-        let border;
-
-
-        border = turf.polygonToLine(countryGeoJSON);
-
-
-        
-
-        let minDistance = Infinity;
-        function showLosePopup() {{
-            const popup = document.createElement('div');
-            popup.innerText = `💩 You stink! Best guess: ${{minDistance.toFixed(0)}} miles from the border.`;;
-            popup.style.position = 'fixed';
-            popup.style.top = '70px';
-            popup.style.left = '50%';
-            popup.style.transform = 'translateX(-50%)';
-            popup.style.background = 'rgba(0,0,0,0.85)';
-            popup.style.color = 'white';
-            popup.style.padding = '12px 20px';
-            popup.style.borderRadius = '10px';
-            popup.style.fontSize = '1em';
-            popup.style.zIndex = '9999';
-            popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
-            document.body.appendChild(popup);
-        }}
-
 
         const markers = document.getElementsByClassName("plus-marker");
 
@@ -320,6 +315,7 @@ turf_js = f"""
             }});        
 
 
+        
             // LocalStorage key
 
             const playedKey = "hasGuessed_" + new Date().toISOString().slice(0,10);
@@ -330,28 +326,36 @@ turf_js = f"""
             const savedScore = localStorage.getItem(playedKey + "_score");
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+            totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
+
+            let Dist = 0;
 
             if (savedScore === "Suck") {{
+
+                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
+                
+                for (const [lat, lng] of stored) {{
+                    const pt = turf.point([lng, lat]);
+
+                    d = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                    Dist = Dist + d
+                    totalDistance = Dist;
+                }}
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
                 gameOver = true;
+                
+                showLosePopup();
+
                 // Optionally re-show the country
                 countryLayer = L.geoJSON(countryGeoJSON, {{
                     style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
                 }}).addTo({map_var});
 
+
             }}
 
-            if (played) {{
-                updateBanner("✅ You already played today. | Guesses: " + savedScore);
-                locked = true;
-                gameOver = true;
 
-                // Optionally re-show the country
-                countryLayer = L.geoJSON(countryGeoJSON, {{
-                    style: {{ color: 'green', weight: 3, fillOpacity: 0.3 }}
-                }}).addTo({map_var});
-            }}
 
 
             const reloadGuesses = () => {{
@@ -368,6 +372,30 @@ turf_js = f"""
                 }}
             }};
             reloadGuesses();
+
+
+            if (played) {{
+                updateBanner("✅ You already played today. | Guesses: " + savedScore);
+                locked = true;
+                gameOver = true;
+
+                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
+
+                console.log(stored[stored.length - 1][0], stored[stored.length - 1][1]);
+                L.marker([stored[stored.length - 1][0], stored[stored.length - 1][1]], {{
+                    icon: L.divIcon({{
+                        className: 'star-marker',
+                        iconSize: [20, 20],
+                        iconAnchor: [10,10]
+
+                    }})
+                }}).addTo({map_var});
+
+                // Optionally re-show the country
+                countryLayer = L.geoJSON(countryGeoJSON, {{
+                    style: {{ color: 'green', weight: 3, fillOpacity: 0.3 }}
+                }}).addTo({map_var});
+            }}
 
             {map_var}.on('click', function(e) {{
                 if(gameOver === false){{
@@ -391,54 +419,52 @@ turf_js = f"""
             }});
 
             lockButton.addEventListener("click", function() {{
+                let distanceToBorder = Infinity
+
                 if(tapCount === 1) {{
                     guessCount += 1
                     localStorage.setItem(playedKey + "_guesses", guessCount);
                     saveGuess(pt.geometry.coordinates[1], pt.geometry.coordinates[0]);
+
+                    if (border.type === "FeatureCollection") {{
+                        console.log("a");
+                        border.features.forEach(f => {{
+                            const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
+                            if (dist < distanceToBorder) {{
+                                distanceToBorder = dist;
+                            }}
+                        }});
+                        console.log(distanceToBorder);
+                    }}else{{
+
+                        if (border.geometry.type === "MultiLineString") {{
+                            console.log("b");
+
+
+                            border.geometry.coordinates.forEach(g => {{
+                                console.log(g);
+                                const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
+                                if (dist < distanceToBorder) {{
+                                    distanceToBorder = dist;
+                                }}
+                            }});
+                        }} else{{
+                            console.log("c");
+
+                            distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
+                        }}
+                    }};
+                    console.log(distanceToBorder);
+
+                    totalDistance = totalDistance + distanceToBorder
+                    localStorage.setItem(playedKey + "_totalDistance", totalDistance)
+
 
                     tapCount = 0
 
                     while (markers.length > 0) {{
                         markers[0].remove();
                     }}
-                    
-                    console.log(border);
-
-                    if (border.type === "FeatureCollection") {{
-                        border.features.forEach(f => {{
-                            if (f.geometry.type === "MultiLineString") {{
-                            f.geometry.coordinates.forEach(g => {{
-                                console.log(g);
-                                const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
-                                if (dist < minDistance) {{
-                                    minDistance = dist;
-                                }}
-                            }}); 
-                        }} else {{
-                            const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
-                            if (dist < minDistance) {{
-                                minDistance = dist;
-                            }}
-                        }}
-                    }});
-                    }}else{{
-
-                        if (border.geometry.type === "MultiLineString") {{
-                            border.geometry.coordinates.forEach(g => {{
-                                console.log(g);
-                                const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
-                                if (dist < minDistance) {{
-                                    minDistance = dist;
-                                }}
-                            }});
-                        }} else{{
-                        const distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                        if (distanceToBorder < minDistance) {{
-                            minDistance = distanceToBorder;
-                        }}
-                        }}
-                    }};
-                    
                     
 
                     let shape;
@@ -452,6 +478,7 @@ turf_js = f"""
                     }}
 
                     let inside = shape ? turf.booleanPointInPolygon(pt, shape) : false;
+
 
                     if (inside) {{
                         gameOver = true;
