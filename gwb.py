@@ -254,10 +254,10 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
 
-        var distanceToBorder = Infinity;
+        var totalDistance = Infinity;
         function showLosePopup() {{
             const popup = document.createElement('div');
-            popup.innerText = `💩 You stink! Average proximity: ${{(distanceToBorder).toFixed(0)}} miles from the border.`;;
+            popup.innerText = `💩 You stink! Average proximity: ${{(totalDistance/6).toFixed(0)}} miles from the border.`;;
             popup.style.position = 'fixed';
             popup.style.top = '70px';
             popup.style.left = '50%';
@@ -329,48 +329,6 @@ turf_js = f"""
             totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
 
             if (savedScore === "Suck") {{
-
-
-                const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
-                for (const [lat, lng] of stored) {{
-
-                    const pt = turf.point([lng, lat])
-                
-                    if (border.type === "FeatureCollection") {{
-                        console.log("a");
-                        //console.log(pt);
-
-                        border.features.forEach(f => {{
-                            const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
-                            //console.log(dist);
-
-                            if (dist < distanceToBorder) {{
-                                distanceToBorder = dist;
-
-                            }}
-                        }});
-                    }}else{{
-    
-                        if (border.geometry.type === "MultiLineString") {{
-                            //console.log("b");
-    
-    
-                            border.geometry.coordinates.forEach(g => {{
-                                console.log(g);
-                                const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
-                                if (dist < distanceToBorder) {{
-                                    distanceToBorder = dist;
-                                }}
-                            }});
-                        }} else{{
-                            console.log("c");
-    
-                            distanceToBorder = turf.pointToLineDistance(pt, border, {{units: 'miles'}});
-                        }}
-                    }};
-                    console.log(distanceToBorder);
-                }};
-
         
                 
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
