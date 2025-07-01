@@ -331,10 +331,12 @@ turf_js = f"""
             
             if (savedScore === "Suck") {{
 
+                let distanceToBorder = 0
+
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
 
-                    pt = turf.point([lng, lat])
+                    const pt = turf.point([lng, lat])
                 
                     if (border.type === "FeatureCollection") {{
                         console.log("a");
@@ -366,7 +368,8 @@ turf_js = f"""
                     }};
                     console.log(distanceToBorder);
                 }};
-                
+
+        
                 
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
                 locked = true;
