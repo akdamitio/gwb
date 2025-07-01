@@ -344,9 +344,10 @@ turf_js = f"""
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
                             if (dist < distanceToBorder) {{
                                 distanceToBorder = dist;
+                                console.log(dist);
+
                             }}
                         }});
-                        console.log(distanceToBorder);
                     }}else{{
     
                         if (border.geometry.type === "MultiLineString") {{
