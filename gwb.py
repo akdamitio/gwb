@@ -286,7 +286,7 @@ turf_js = f"""
             document.body.appendChild(popup);
         }}
         
-        const circleToPolygon = require('circle-to-polygon');
+        // const circleToPolygon = require('circle-to-polygon');
         var radius = 5000000;                           // in meters
         var numberOfEdges = 32;                     //optional that defaults to 32
 
@@ -526,9 +526,8 @@ turf_js = f"""
                             }}).addTo({map_var}); 
 
                             //Reveal small portion of map
-                            cCoords = [pt.geometry.coordinates[1], pt.geometry.coordinates[0]]
-                            let polygon = circleToPolygon(cCoords, radius, numberOfEdges); 
-                            L.tileLayer.mask('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, mask: polygon}}).addTo({map_var})        
+                            //cCoords = [pt.geometry.coordinates[1], pt.geometry.coordinates[0]]
+                            //L.tileLayer.mask('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, mask: polygon}}).addTo({map_var})        
 
 
                             const messageIndex = guessCount - 1;
