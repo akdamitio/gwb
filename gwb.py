@@ -73,6 +73,7 @@ m = folium.Map(
 )
 
 
+
 smooth_zoom_js = """
 <script>
     var originalInit = L.Map.prototype.initialize;
@@ -85,6 +86,11 @@ smooth_zoom_js = """
 """
 
 m.get_root().html.add_child(Element(smooth_zoom_js))
+
+mask_ext = """
+<script src="https:frogcat.github.io/leaflet-tilelayer-mask/leaflet-tilelayer-mask.js"></script>
+"""
+m.get_root().html.add_child(Element(mask_ext))
 
 b = r"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 
@@ -283,7 +289,7 @@ turf_js = f"""
             document.body.appendChild(popup);
         }}
         
-        var circleToPolygon = require('circle-to-polygon');
+        const circleToPolygon = require('circle-to-polygon');
         var radius = 5000000;                           // in meters
         var numberOfEdges = 32;                     //optional that defaults to 32
 
