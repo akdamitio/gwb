@@ -242,7 +242,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    //localStorage.clear()
+    localStorage.clear()
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -282,6 +282,10 @@ turf_js = f"""
             popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
             document.body.appendChild(popup);
         }}
+        
+        const circleToPolygon = require('circle-to-polygon');
+        const radius = 500000;                           // in meters
+        const numberOfEdges = 32;                     //optional that defaults to 32
 
 
         const saveGuess = (lat, lng) => {{
@@ -516,7 +520,13 @@ turf_js = f"""
                                 color: 'red',
                                 fillColor: 'red',
                                 fillOpacity: 1
-                            }}).addTo({map_var});       
+                            }}).addTo({map_var}); 
+
+                            //Reveal small portion of map
+                            cCoords = [pt.geometry.coordinates[1], pt.geometry.coordinates[0]]
+                            let polygon = circleToPolygon(cCoords, radius, numberOfEdges); 
+                            L.tileLayer.mask('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, mask: polygon}}).addTo({map_var})        
+
 
                             const messageIndex = guessCount - 1;
                             const msg = wrongGuessMessages[messageIndex % wrongGuessMessages.length];
