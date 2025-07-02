@@ -87,10 +87,7 @@ smooth_zoom_js = """
 
 m.get_root().html.add_child(Element(smooth_zoom_js))
 
-mask_ext = """
-<script src="https:frogcat.github.io/leaflet-tilelayer-mask/leaflet-tilelayer-mask.js"></script>
-"""
-m.get_root().html.add_child(Element(mask_ext))
+
 
 b = r"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 
