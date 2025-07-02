@@ -171,6 +171,17 @@ css = f"""
       cursor: crosshair;
     }}
 
+    .arrow-marker {{
+    color: red
+    font-size: 20px;
+    line-height: 20px;
+    text-align: center;
+    pointer-events: none;
+    }}
+    .arrow-marker::before {{
+        content: "➤";        
+    }}
+
 
 
     #lockButton {{
