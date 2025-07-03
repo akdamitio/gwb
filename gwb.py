@@ -286,7 +286,6 @@ turf_js = f"""
             document.body.appendChild(popup);
         }}
         
-        // const circleToPolygon = require('circle-to-polygon');
         var radius = 5000000;                           // in meters
         var numberOfEdges = 32;                     //optional that defaults to 32
 
