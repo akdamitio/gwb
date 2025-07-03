@@ -286,8 +286,55 @@ turf_js = f"""
             document.body.appendChild(popup);
         }}
         
-        var radius = 5000000;                           // in meters
-        var numberOfEdges = 32;                     //optional that defaults to 32
+
+
+        //MASKING
+        const overlayPane = document.createElement('div');
+        overlayPane.style.position = 'absolute';
+        overlayPane.style.top = '0';
+        overlayPane.style.left = '0';
+        overlayPane.style.width = '100%';
+        overlayPane.style.height = '100%';
+        overlayPane.style.pointerEvents = 'none';
+        overlayPane.id = 'map-mask';
+        overlayPane.style.background = 'rgba(0,0,0,0.75)';
+        overlayPane.style.maskImage = 'none';
+        overlayPane.style.webkitMaskImage = 'none';
+        document.querySelector('.leaflet-map-pane').appendChild(overlayPane);
+
+        function addRevealCircle(lat,lng) {
+            const radiusInMeters = 50000;
+            const pt = map.latLngToContainerPoint([lat,lng]);
+            const circleCSS = 'radial-gradient(circle ${radiusInMeters / 1000}px at ${pt.x}px ${pt.y}, transparent 0%, rgba(0,0,0,0.75) 100%)';
+            const maskEl = document.getElementById('map-mask');
+            const existing = maskEl.style.webkitMaskImage || '';
+            maskEl.style.webkitMaskImage = existing
+                ? '${existing}, ${circleCSS}'
+                : circleCSS;
+            maskEl.style.maskImage = maskEl.style.webkit.MaskImage
+        }
+
+        map.on('zoomed moveend', () => {
+            redrawRevealMask();
+        });
+
+        const revealedCircles = [];
+        function addRevealCircle(lat, lng) {
+            revealedCircles.push([lat,lng]);
+            redrawRevealMask();
+        }
+
+        function redrawRevealMask() {
+            const maskEl = document.getElementById('map-mask');
+            const circles = revealedCircles.map(([lat, lng]) => {
+                const pt = map.latLngToContainerPoint([lat, lng]);
+                return 'radial-gradient(circle 250px at ${pt.x}px ${pt.y}, transparent 0%, rgba(0,0,0,0.75) 100%)';
+            });
+        const maskStr = circles.join(', ');
+        maskEl.style.webkitMaskImage = maskStr;
+        mask.style.maskImage = maskStr;
+    }
+
 
 
         const saveGuess = (lat, lng) => {{
