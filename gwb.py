@@ -302,38 +302,40 @@ turf_js = f"""
         overlayPane.style.webkitMaskImage = 'none';
         document.querySelector('.leaflet-map-pane').appendChild(overlayPane);
 
-        function addRevealCircle(lat,lng) {
-            const radiusInMeters = 50000;
-            const pt = map.latLngToContainerPoint([lat,lng]);
-            const circleCSS = 'radial-gradient(circle ${radiusInMeters / 1000}px at ${pt.x}px ${pt.y}, transparent 0%, rgba(0,0,0,0.75) 100%)';
-            const maskEl = document.getElementById('map-mask');
-            const existing = maskEl.style.webkitMaskImage || '';
-            maskEl.style.webkitMaskImage = existing
-                ? '${existing}, ${circleCSS}'
-                : circleCSS;
-            maskEl.style.maskImage = maskEl.style.webkit.MaskImage
-        }
+        function addRevealCircle(lat, lng) {{
+          const radiusInMeters = 500000; // 500 km
+          const pt = map.latLngToContainerPoint([lat, lng]);
+        
+          const circleCSS = `radial-gradient(circle ${{radiusInMeters / 1000}}px at ${{pt.x}}px ${{pt.y}}px, transparent 0%, rgba(0,0,0,0.75) 100%)`;
+        
+          const maskEl = document.getElementById('map-mask');
+        
+          const existing = maskEl.style.webkitMaskImage || '';
+          maskEl.style.webkitMaskImage = existing ? `${{existing}}, ${{circleCSS}}` : circleCSS;
+          maskEl.style.maskImage = maskEl.style.webkitMaskImage; // for cross-browser
+        }}
 
-        map.on('zoomed moveend', () => {
+        map.on('zoomed moveend', () => {{
             redrawRevealMask();
-        });
+        }});
 
         const revealedCircles = [];
-        function addRevealCircle(lat, lng) {
+        function addRevealCircle(lat, lng) {{
             revealedCircles.push([lat,lng]);
             redrawRevealMask();
-        }
+        }}
 
-        function redrawRevealMask() {
+        function redrawRevealMask() {{
             const maskEl = document.getElementById('map-mask');
-            const circles = revealedCircles.map(([lat, lng]) => {
+            const circles = revealedCircles.map(([lat, lng]) => {{
                 const pt = map.latLngToContainerPoint([lat, lng]);
-                return 'radial-gradient(circle 250px at ${pt.x}px ${pt.y}, transparent 0%, rgba(0,0,0,0.75) 100%)';
-            });
+                return 'radial-gradient(circle 250px at ${{pt.x}}px ${{pt.y}}, transparent 0%, rgba(0,0,0,0.75) 100%)';
+            }});
         const maskStr = circles.join(', ');
         maskEl.style.webkitMaskImage = maskStr;
         mask.style.maskImage = maskStr;
-    }
+        }}
+        
 
 
 
@@ -562,6 +564,8 @@ turf_js = f"""
 
                     }} else {{
                         if(gameOver === false){{
+
+                            updateMask(L.latLng(pt.geometry.coordinates[1], pt.geometry.coordinates[0]));
                         
                             // Add marker at clicked location
                             L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
