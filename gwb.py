@@ -90,7 +90,7 @@ m.get_root().html.add_child(Element(smooth_zoom_js))
 
 mask_import = """
 <link rel="stylesheet" href="https://unpkg.com/leaflet-tilelayer-mask@1.0.1/leaflet-tilelayer-mask.css" />
-<script src="https://unpkg.com/leaflet-tilelayer-mask@1.0.1/leaflet-tilelayer-mask.min.js"></script>
+<script src="https://github.com/frogcat/leaflet-tilelayer-mask/blob/master/leaflet-tilelayer-mask.js"></script>
 """
 m.get_root().html.add_child(Element(mask_import))
 
