@@ -2,7 +2,7 @@ import geopandas as gpd
 import folium
 import json
 import streamlit as st
-from folium import Element
+from branca.element import Element
 from datetime import date
 import hashlib
 import random
