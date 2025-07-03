@@ -225,8 +225,24 @@ css = f"""
         pointer-events: none;
         white-space: nowrap;
     }}
+
+    #map-mask {{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background: black;
+        z-index: 1000;
+        mask-image: none;
+        -webkit-mask-image: none;
+    }}
+
         
 </style>
+<div id="map-mask"></div>
+
 <div id='guessBanner'>🎯 \u0020 <strong>{selected_name}{selected_sov}</strong></div>
 <div><button id="lockButton">🔒 Lock In Guess</button></div>
 <div id="wrongGuessPopup"></div>
@@ -287,55 +303,48 @@ turf_js = f"""
         }}
         
 
-
         //MASKING
-        const overlayPane = document.createElement('div');
-        overlayPane.style.position = 'absolute';
-        overlayPane.style.top = '0';
-        overlayPane.style.left = '0';
-        overlayPane.style.width = '100%';
-        overlayPane.style.height = '100%';
-        overlayPane.style.pointerEvents = 'none';
-        overlayPane.id = 'map-mask';
-        overlayPane.style.background = 'rgba(0,0,0,0.75)';
-        overlayPane.style.maskImage = 'none';
-        overlayPane.style.webkitMaskImage = 'none';
-        document.querySelector('.leaflet-map-pane').appendChild(overlayPane);
+        window.map = {map_var};
 
-        function addRevealCircle(lat, lng) {{
-          const radiusInMeters = 500000; // 500 km
-          const pt = map.latLngToContainerPoint([lat, lng]);
+        const revealZones = [];
         
-          const circleCSS = `radial-gradient(circle ${{radiusInMeters / 1000}}px at ${{pt.x}}px ${{pt.y}}px, transparent 0%, rgba(0,0,0,0.75) 100%)`;
+        function updateMask(centerLatLng, radiusKm = 500) {{
+            const pixelCenter = window.map.latLngToContainerPoint(centerLatLng);
+            
+            // Convert radius from km to px: estimate using 500km ≈ 100px at medium zoom
+            const radiusPx = 100;  // or compute based on zoom level
         
-          const maskEl = document.getElementById('map-mask');
+            const mask = document.getElementById("map-mask");
+            const newMask = `radial-gradient(circle ${{radiusPx}}px at ${{pixelCenter.x}}px ${{pixelCenter.y}}px, transparent 0%, black 100%)`;
         
-          const existing = maskEl.style.webkitMaskImage || '';
-          maskEl.style.webkitMaskImage = existing ? `${{existing}}, ${{circleCSS}}` : circleCSS;
-          maskEl.style.maskImage = maskEl.style.webkitMaskImage; // for cross-browser
+            const current = mask.style.webkitMaskImage || "";
+            if (current.includes("radial-gradient")) {{
+                mask.style.maskImage += `, ${{newMask}}`;
+                mask.style.webkitMaskImage += `, ${{newMask}}`;
+            }} else {{
+                mask.style.maskImage = newMask;
+                mask.style.webkitMaskImage = newMask;
+            }}
+        
+            revealZones.push(centerLatLng);  // Store for redraw on resize
         }}
-
-        map.on('zoomed moveend', () => {{
-            redrawRevealMask();
-        }});
-
-        const revealedCircles = [];
-        function addRevealCircle(lat, lng) {{
-            revealedCircles.push([lat,lng]);
-            redrawRevealMask();
-        }}
-
-        function redrawRevealMask() {{
-            const maskEl = document.getElementById('map-mask');
-            const circles = revealedCircles.map(([lat, lng]) => {{
-                const pt = map.latLngToContainerPoint([lat, lng]);
-                return 'radial-gradient(circle 250px at ${{pt.x}}px ${{pt.y}}, transparent 0%, rgba(0,0,0,0.75) 100%)';
+        
+        function redrawMask() {{
+            const mask = document.getElementById("map-mask");
+            const parts = revealZones.map(({{ lat, lng }}) => {{
+                const pt = window.map.latLngToContainerPoint([lat, lng]);
+                const radiusPx = 100;
+                return `radial-gradient(circle ${{radiusPx}}px at ${{pt.x}}px ${{pt.y}}px, transparent 0%, black 100%)`;
             }});
-        const maskStr = circles.join(', ');
-        maskEl.style.webkitMaskImage = maskStr;
-        mask.style.maskImage = maskStr;
+            const maskStr = parts.join(", ");
+            mask.style.maskImage = maskStr;
+            mask.style.webkitMaskImage = maskStr;
         }}
         
+        window.addEventListener('resize', redrawMask);
+                
+
+               
 
 
 
@@ -565,7 +574,10 @@ turf_js = f"""
                     }} else {{
                         if(gameOver === false){{
 
-                            updateMask(L.latLng(pt.geometry.coordinates[1], pt.geometry.coordinates[0]));
+                            updateMask([pt.geometry.coordinates[1], pt.geometry.coordinates[0]]);
+
+
+                            //reveal circle of basemap here
                         
                             // Add marker at clicked location
                             L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
