@@ -88,6 +88,11 @@ smooth_zoom_js = """
 m.get_root().html.add_child(Element(smooth_zoom_js))
 
 
+mask_import = """
+<link rel="stylesheet" href="https://unpkg.com/leaflet-tilelayer-mask@1.0.1/leaflet-tilelayer-mask.css" />
+<script src="https://unpkg.com/leaflet-tilelayer-mask@1.0.1/leaflet-tilelayer-mask.min.js"></script>
+"""
+m.get_root().html.add_child(Element(mask_import))
 
 b = r"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 
@@ -241,7 +246,7 @@ css = f"""
 
         
 </style>
-<div id="map-mask"></div>
+
 
 <div id='guessBanner'>🎯 \u0020 <strong>{selected_name}{selected_sov}</strong></div>
 <div><button id="lockButton">🔒 Lock In Guess</button></div>
@@ -303,46 +308,15 @@ turf_js = f"""
         }}
         
 
-        //MASKING
-        window.map = {map_var};
-
-        const revealZones = [];
-        
-        function updateMask(centerLatLng, radiusKm = 500) {{
-            const pixelCenter = window.map.latLngToContainerPoint(centerLatLng);
-            
-            // Convert radius from km to px: estimate using 500km ≈ 100px at medium zoom
-            const radiusPx = 100;  // or compute based on zoom level
-        
-            const mask = document.getElementById("map-mask");
-            const newMask = `radial-gradient(circle ${{radiusPx}}px at ${{pixelCenter.x}}px ${{pixelCenter.y}}px, transparent 0%, black 100%)`;
-        
-            const current = mask.style.webkitMaskImage || "";
-            if (current.includes("radial-gradient")) {{
-                mask.style.maskImage += `, ${{newMask}}`;
-                mask.style.webkitMaskImage += `, ${{newMask}}`;
-            }} else {{
-                mask.style.maskImage = newMask;
-                mask.style.webkitMaskImage = newMask;
-            }}
-        
-            revealZones.push(centerLatLng);  // Store for redraw on resize
-        }}
-        
-        function redrawMask() {{
-            const mask = document.getElementById("map-mask");
-            const parts = revealZones.map(({{ lat, lng }}) => {{
-                const pt = window.map.latLngToContainerPoint([lat, lng]);
-                const radiusPx = 100;
-                return `radial-gradient(circle ${{radiusPx}}px at ${{pt.x}}px ${{pt.y}}px, transparent 0%, black 100%)`;
-            }});
-            const maskStr = parts.join(", ");
-            mask.style.maskImage = maskStr;
-            mask.style.webkitMaskImage = maskStr;
-        }}
-        
-        window.addEventListener('resize', redrawMask);
-                
+       let maskLayer = L.tileLayer.mask(
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',
+          {{
+            maskLatLngs: [], // will hold the visible circles
+            attribution: 'Tiles © Esri',
+            detectRetina: true,
+            radius: 500000  // 500 km in meters
+          }}
+        ).addTo({{ map_var }});
 
                
 
@@ -574,8 +548,8 @@ turf_js = f"""
                     }} else {{
                         if(gameOver === false){{
 
-                            updateMask([pt.geometry.coordinates[1], pt.geometry.coordinates[0]]);
-
+                            const guessLatLng = pt;  // from user's click
+                            maskLayer.addMask(guessLatLng);
 
                             //reveal circle of basemap here
                         
@@ -587,9 +561,7 @@ turf_js = f"""
                                 fillOpacity: 1
                             }}).addTo({map_var}); 
 
-                            //Reveal small portion of map
-                            //cCoords = [pt.geometry.coordinates[1], pt.geometry.coordinates[0]]
-                            //L.tileLayer.mask('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, mask: polygon}}).addTo({map_var})        
+                           
 
 
                             const messageIndex = guessCount - 1;
