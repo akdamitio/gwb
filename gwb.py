@@ -264,7 +264,10 @@ geojson_str = json.dumps(geojson_geom)
 # JS logic
 map_var = m.get_name()
 turf_js = f"""
+<script src="https://github.com/frogcat/leaflet-tilelayer-mask/blob/master/leaflet-tilelayer-mask.js"></script>
+
 (function() {{
+
     var gameOver = false;
     localStorage.clear()
 
