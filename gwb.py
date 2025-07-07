@@ -653,10 +653,8 @@ turf_js = f"""
 
                     }} else {{
                         if(gameOver === false){{
-
-                            const guessLatLng = pt;  // from user's click
-                            maskLayer.addMask(guessLatLng);
-
+                            
+                            addHole()                
                             //reveal circle of basemap here
                         
                             // Add marker at clicked location
