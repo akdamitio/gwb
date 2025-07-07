@@ -331,14 +331,17 @@ turf_js = f"""
         function initMap() {{
             
             // Add base tile layer
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: maskPane, keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
+            mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: maskPane, keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
 
             
             // Create initial mask
             createMask();
             
             // Update mask when map moves or zooms
-            {map_var}.on('zoomstart movestart', updateMask);
+            {map_var}.on('zoomstart movestart', updateMask, mapLayer.clearLayers);
+            {map_var}.on('zoomend moveend', mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: maskPane, keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
+);
+
         }}
 
         // Create the mask layer
