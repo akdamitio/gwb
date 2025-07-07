@@ -331,7 +331,7 @@ turf_js = f"""
         function initMap() {{
             
             // Add base tile layer
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane:maskPane}}).addTo({map_var})        
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: maskPane, keepBuffer: 0}}).addTo({map_var})        
 
             
             // Create initial mask
