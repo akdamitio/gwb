@@ -335,7 +335,7 @@ turf_js = f"""
             maskLayer.clearLayers();
             
             // Get map bounds
-            const bounds = map.getBounds();
+            const bounds = {map_var}.getBounds();
             const ne = bounds.getNorthEast();
             const sw = bounds.getSouthWest();
             
