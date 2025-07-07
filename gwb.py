@@ -415,9 +415,11 @@ turf_js = f"""
                 radius: radius
             }};
             
-            holes.push(hole);
+            holes.push(hole=0);
             updateMask();
             updateHolesList();
+
+        }};
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -649,11 +651,13 @@ turf_js = f"""
                     }} else {{
                         if(gameOver === false){{
 
-                            let radius = 0
-                            radius  = (guessCount - 1) * 1000
-                            addHole()                
+            
                             //reveal circle of basemap here
-                        
+                            
+                            let radius = 0;
+                            radius  = (guessCount - 1) * 1000;
+                            addHole();    
+                            
                             // Add marker at clicked location
                             L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                                 radius: 3,
