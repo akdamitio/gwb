@@ -403,15 +403,10 @@ turf_js = f"""
         }}
 
         // Add a new hole to the mask
-        function addHole() {{
-            const lat = parseFloat(document.getElementById('lat').value);
-            const lng = parseFloat(document.getElementById('lng').value);
-            const radius = parseFloat(document.getElementById('radius').value);
-            
-            if (isNaN(lat) || isNaN(lng) || isNaN(radius)) {{
-                alert('Please enter valid coordinates and radius');
-                return;
-            }}
+        function addHole(radius) {{
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lat;
+           
             
             const hole = {{
                 id: holeId++,
@@ -653,7 +648,9 @@ turf_js = f"""
 
                     }} else {{
                         if(gameOver === false){{
-                            
+
+                            let radius = 0
+                            radius  = (guessCount - 1) * 1000
                             addHole()                
                             //reveal circle of basemap here
                         
