@@ -416,7 +416,6 @@ turf_js = f"""
             
             holes.push(hole);
             updateMask();
-            updateHolesList();
 
         }};
 
