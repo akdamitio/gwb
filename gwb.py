@@ -96,7 +96,8 @@ folium.PolyLine(
     locations=[[0, -180], [0, 180]],
     color='red',
     weight=1.2,
-    opacity=0.6
+    opacity=0.6,
+    zindex=9998
 ).add_to(m)
 
 
@@ -425,9 +426,10 @@ turf_js = f"""
                 radius: radius
             }};
             
+            holes.push(hole);
+
             updateMask();
 
-            holes.push(hole);
 
         }};
 
