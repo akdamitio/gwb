@@ -97,7 +97,7 @@ folium.PolyLine(
     color='red',
     weight=1.2,
     opacity=0.6,
-    zindex=9998
+    zIndex = 9998
 ).add_to(m)
 
 
