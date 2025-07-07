@@ -305,7 +305,6 @@ turf_js = f"""
         
 
         //MASKING \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-        let map = {map_var};
         let maskLayer;
         let holes = [];
         let holeId = 0;
@@ -326,7 +325,7 @@ turf_js = f"""
 
         // Create the mask layer
         function createMask() {{
-            maskLayer = L.layerGroup().addTo(map);
+            maskLayer = L.layerGroup().addTo({map_var});
             updateMask();
         }}
 
