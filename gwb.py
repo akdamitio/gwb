@@ -325,7 +325,7 @@ turf_js = f"""
         let holeId = 0;
         var maskPane = {map_var}.createPane("mPane");
 
-        maskPane.style.zIndex = 0;
+        maskPane.style.zIndex = 600;
 
         // Initialize the map
         function initMap() {{
