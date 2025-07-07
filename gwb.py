@@ -311,7 +311,7 @@ turf_js = f"""
         let holeId = 0;
 
         // Initialize the map
-        function initMap() {
+        function initMap() {{
             
             // Add base tile layer
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}}).addTo({map_var})        
@@ -322,7 +322,7 @@ turf_js = f"""
             
             // Update mask when map moves or zooms
             map.on('zoomend moveend', updateMask);
-        }
+        }}
 
         // Create the mask layer
         function createMask() {{
