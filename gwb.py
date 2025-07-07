@@ -163,6 +163,17 @@ css = f"""
         content: "✦";        
     }}
 
+    .x-marker {{
+        color: red;
+        font-size: 20px;
+        line-height: 20px;
+        text-align: center;
+        pointer-events: none;
+    }}
+    .x-marker::before {{
+        content: "✖";        
+    }}    
+
     .plus-marker {{
       width: 40px;
       height: 40px;
@@ -320,7 +331,7 @@ turf_js = f"""
             createMask();
             
             // Update mask when map moves or zooms
-            //{map_var}.on('zoomend moveend', updateMask);
+            {map_var}.on('zoomend moveend', updateMask);
         }}
 
         // Create the mask layer
@@ -505,13 +516,13 @@ turf_js = f"""
             const reloadGuesses = () => {{
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
-                    L.circleMarker([lat, lng], {{
-                        radius: 3,
-                        color: 'red',
-                        weight: 0,
-                        fillColor: 'red',
-                        fillOpacity: 1,
-                        className: 'guess-dot'
+                    L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
+                        icon: L.divIcon({{
+                            className: 'x-marker',
+                            iconSize: [20, 20],
+                            iconAnchor: [10,10]
+
+                        }})
                     }}).addTo({map_var});
                 }}
             }};
@@ -659,12 +670,14 @@ turf_js = f"""
                             addHole(pt, radius);    
                             
                             // Add marker at clicked location
-                            L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
-                                radius: 3,
-                                color: 'red',
-                                fillColor: 'red',
-                                fillOpacity: 1
-                            }}).addTo({map_var}); 
+                            L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
+                                icon: L.divIcon({{
+                                    className: 'x-marker',
+                                    iconSize: [20, 20],
+                                    iconAnchor: [10,10]
+        
+                                }})
+                            }}).addTo({map_var});
 
                            
 
