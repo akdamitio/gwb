@@ -425,8 +425,9 @@ turf_js = f"""
                 radius: radius
             }};
             
-            holes.push(hole);
             updateMask();
+
+            holes.push(hole);
 
         }};
 
