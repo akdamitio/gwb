@@ -320,7 +320,7 @@ turf_js = f"""
             createMask();
             
             // Update mask when map moves or zooms
-            {map_var}.on('zoomend moveend', updateMask);
+            //{map_var}.on('zoomend moveend', updateMask);
         }}
 
         // Create the mask layer
@@ -367,7 +367,7 @@ turf_js = f"""
         // Create circle coordinates for a given center and radius
         function createCircleCoordinates(lat, lng, radiusKm) {{
             const points = [];
-            const steps = 64; // Number of points to approximate circle
+            const steps = 128; // Number of points to approximate circle
             
             for (let i = 0; i < steps; i++) {{
                 const angle = (i / steps) * 2 * Math.PI;
