@@ -325,13 +325,13 @@ turf_js = f"""
         let holeId = 0;
         var maskPane = {map_var}.createPane("mPane");
 
-        maskPane.style.zIndex = 400;
+        maskPane.style.zIndex = 0;
 
         // Initialize the map
         function initMap() {{
             
             // Add base tile layer
-            mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
+            mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: mPane, keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
 
             
             // Create initial mask
