@@ -96,8 +96,7 @@ folium.PolyLine(
     locations=[[0, -180], [0, 180]],
     color='red',
     weight=1.2,
-    opacity=0.6,
-    zIndex = 9998
+    opacity=0.6
 ).add_to(m)
 
 
@@ -246,7 +245,6 @@ css = f"""
         height: 100%;
         pointer-events: none;
         background: black;
-        z-index: 1000;
         mask-image: none;
         -webkit-mask-image: none;
     }}
