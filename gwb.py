@@ -359,11 +359,11 @@ turf_js = f"""
             
             // Create a large rectangle covering the entire view
             const outerRing = [
-                [ne.lat + 1, ne.lng + 1],
-                [ne.lat + 1, sw.lng - 1],
-                [sw.lat - 1, sw.lng - 1],
-                [sw.lat - 1, ne.lng + 1],
-                [ne.lat + 1, ne.lng + 1]
+                [90 + 1, 180 + 1],
+                [90 + 1, -180 - 1],
+                [-90 - 1, -180 - 1],
+                [-90 - 1, 180 + 1],
+                [90 + 1, 180 + 1]
             ];
             
             // Create holes (inner rings) for each specified location
