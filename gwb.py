@@ -374,7 +374,7 @@ turf_js = f"""
             // Create polygon with holes
             const maskPolygon = L.polygon([outerRing, ...innerRings], {{
                 color: 'transparent',
-                fillColor: '#808080',
+                fillColor: '#dbd9d9',
                 fillOpacity: 1,
                 weight: 0,
                 pane: "mPane"
