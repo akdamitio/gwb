@@ -130,6 +130,7 @@ css = f"""
 <style>
     .leaflet-container {{
         cursor: crosshair !important;
+        z-index: 9998
     }}
     #guessBanner {{
         position: fixed;
@@ -245,6 +246,7 @@ css = f"""
         height: 100%;
         pointer-events: none;
         background: black;
+        z-index: 1000;
         mask-image: none;
         -webkit-mask-image: none;
     }}
