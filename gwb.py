@@ -403,7 +403,7 @@ turf_js = f"""
         }}
 
         // Add a new hole to the mask
-        function addHole(radius) {{
+        function addHole(e, radius) {{
             const lat = e.latlng.lat;
             const lng = e.latlng.lat;
            
@@ -415,7 +415,7 @@ turf_js = f"""
                 radius: radius
             }};
             
-            holes.push(hole=0);
+            holes.push(hole);
             updateMask();
             updateHolesList();
 
@@ -656,7 +656,7 @@ turf_js = f"""
                             
                             let radius = 0;
                             radius  = (guessCount - 1) * 1000;
-                            addHole();    
+                            addHole(e, radius);    
                             
                             // Add marker at clicked location
                             L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
