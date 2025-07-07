@@ -377,7 +377,8 @@ turf_js = f"""
                 fillColor: '#dbd9d9',
                 fillOpacity: 1,
                 weight: 0,
-                pane: "mPane"
+                pane: "mPane",
+                keepBuffer: 1000
             }});
             
             maskLayer.addLayer(maskPolygon);
