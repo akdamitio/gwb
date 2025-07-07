@@ -338,7 +338,7 @@ turf_js = f"""
             createMask();
             
             // Update mask when map moves or zooms
-            {map_var}.on('zoomstart movestart', updateMask());
+            {map_var}.on('zoomstart movestart', updateMask);
 
 
         }}
