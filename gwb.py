@@ -171,7 +171,7 @@ css = f"""
         pointer-events: none;
     }}
     .x-marker::before {{
-        content: "✖";        
+        content: "×";        
     }}    
 
     .plus-marker {{
