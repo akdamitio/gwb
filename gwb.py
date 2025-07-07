@@ -170,6 +170,8 @@ css = f"""
         line-height: 30px;
         text-align: center;
         pointer-events: none;
+        cursor: crosshair !important;
+
     }}
     .x-marker::before {{
         content: "×";        
@@ -248,6 +250,7 @@ css = f"""
         background: black;
         z-index: 1000;
         mask-image: none;
+        cursor: crosshair !important;
         -webkit-mask-image: none;
     }}
 
