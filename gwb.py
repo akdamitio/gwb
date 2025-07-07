@@ -655,7 +655,7 @@ turf_js = f"""
                             //reveal circle of basemap here
                             
                             let radius = 0;
-                            radius  = (guessCount - 1) * 1000;
+                            radius  = (guessCount - 1) * 200;
                             addHole(pt, radius);    
                             
                             // Add marker at clicked location
