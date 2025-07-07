@@ -323,6 +323,9 @@ turf_js = f"""
         let maskLayer;
         let holes = [];
         let holeId = 0;
+        var maskPane = {map_var}.createPane("mPane");
+
+        maskPane.style.zIndex = 200;
 
         // Initialize the map
         function initMap() {{
@@ -373,7 +376,8 @@ turf_js = f"""
                 color: 'transparent',
                 fillColor: '#808080',
                 fillOpacity: 1,
-                weight: 0
+                weight: 0,
+                pane: "mPane"
             }});
             
             maskLayer.addLayer(maskPolygon);
