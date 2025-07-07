@@ -88,11 +88,6 @@ smooth_zoom_js = """
 m.get_root().html.add_child(Element(smooth_zoom_js))
 
 
-mask_import = """
-<link rel="stylesheet" href="https://unpkg.com/leaflet-tilelayer-mask@1.0.1/leaflet-tilelayer-mask.css" />
-<script src="https://github.com/frogcat/leaflet-tilelayer-mask/blob/master/leaflet-tilelayer-mask.js"></script>
-"""
-m.get_root().html.add_child(Element(mask_import))
 
 b = r"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 
@@ -266,9 +261,6 @@ map_var = m.get_name()
 turf_js = f"""
 
 (function() {{
-    <script src="https://github.com/frogcat/leaflet-tilelayer-mask/blob/master/leaflet-tilelayer-mask.js"></script>
-
-
     var gameOver = false;
     localStorage.clear()
 
@@ -312,17 +304,127 @@ turf_js = f"""
         }}
         
 
-       let maskLayer = L.tileLayer.mask(
-          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',
-          {{
-            maskLatLngs: [], // will hold the visible circles
-            attribution: 'Tiles © Esri',
-            detectRetina: true,
-            radius: 500000  // 500 km in meters
-          }}
-        ).addTo({{ map_var }});
+        //MASKING \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        let map = {map_var};
+        let maskLayer;
+        let holes = [];
+        let holeId = 0;
 
-               
+        // Initialize the map
+        function initMap() {
+            
+            // Add base tile layer
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}}).addTo({map_var})        
+
+            
+            // Create initial mask
+            createMask();
+            
+            // Update mask when map moves or zooms
+            map.on('zoomend moveend', updateMask);
+        }
+
+        // Create the mask layer
+        function createMask() {{
+            maskLayer = L.layerGroup().addTo(map);
+            updateMask();
+        }}
+
+        // Update the mask based on current map view and holes
+        function updateMask() {{
+            // Clear existing mask
+            maskLayer.clearLayers();
+            
+            // Get map bounds
+            const bounds = map.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            
+            // Create a large rectangle covering the entire view
+            const outerRing = [
+                [ne.lat + 1, ne.lng + 1],
+                [ne.lat + 1, sw.lng - 1],
+                [sw.lat - 1, sw.lng - 1],
+                [sw.lat - 1, ne.lng + 1],
+                [ne.lat + 1, ne.lng + 1]
+            ];
+            
+            // Create holes (inner rings) for each specified location
+            const innerRings = holes.map(hole => {{
+                return createCircleCoordinates(hole.lat, hole.lng, hole.radius);
+            }});
+            
+            // Create polygon with holes
+            const maskPolygon = L.polygon([outerRing, ...innerRings], {{
+                color: 'transparent',
+                fillColor: '#808080',
+                fillOpacity: 1,
+                weight: 0
+            }});
+            
+            maskLayer.addLayer(maskPolygon);
+        }}
+
+        // Create circle coordinates for a given center and radius
+        function createCircleCoordinates(lat, lng, radiusKm) {{
+            const points = [];
+            const steps = 64; // Number of points to approximate circle
+            
+            for (let i = 0; i < steps; i++) {{
+                const angle = (i / steps) * 2 * Math.PI;
+                const point = getPointAtDistance(lat, lng, radiusKm, angle);
+                points.push([point.lat, point.lng]);
+            }}
+            
+            // Close the circle
+            points.push(points[0]);
+            
+            return points;
+        }}
+
+        // Calculate a point at a given distance and bearing from a center point
+        function getPointAtDistance(lat, lng, distanceKm, bearing) {{
+            const R = 6371; // Earth's radius in km
+            const d = distanceKm / R; // Distance in radians
+            
+            const lat1 = lat * Math.PI / 180;
+            const lng1 = lng * Math.PI / 180;
+            
+            const lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + 
+                                  Math.cos(lat1) * Math.sin(d) * Math.cos(bearing));
+            
+            const lng2 = lng1 + Math.atan2(Math.sin(bearing) * Math.sin(d) * Math.cos(lat1),
+                                          Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
+            
+            return {{
+                lat: lat2 * 180 / Math.PI,
+                lng: lng2 * 180 / Math.PI
+            }};
+        }}
+
+        // Add a new hole to the mask
+        function addHole() {{
+            const lat = parseFloat(document.getElementById('lat').value);
+            const lng = parseFloat(document.getElementById('lng').value);
+            const radius = parseFloat(document.getElementById('radius').value);
+            
+            if (isNaN(lat) || isNaN(lng) || isNaN(radius)) {{
+                alert('Please enter valid coordinates and radius');
+                return;
+            }}
+            
+            const hole = {{
+                id: holeId++,
+                lat: lat,
+                lng: lng,
+                radius: radius
+            }};
+            
+            holes.push(hole);
+            updateMask();
+            updateHolesList();
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
