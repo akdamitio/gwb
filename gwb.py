@@ -320,7 +320,7 @@ turf_js = f"""
             createMask();
             
             // Update mask when map moves or zooms
-            map.on('zoomend moveend', updateMask);
+            {map_var}.on('zoomend moveend', updateMask);
         }}
 
         // Create the mask layer
