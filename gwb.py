@@ -171,6 +171,8 @@ css = f"""
         text-align: center;
         pointer-events: none;
         cursor: crosshair !important;
+        transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+
 
     }}
     .x-marker::before {{
