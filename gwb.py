@@ -833,7 +833,6 @@ turf_js = f"""
 
         {map_var}.whenReady(function() {{
 
-            initMap()
 
 
 
@@ -868,7 +867,8 @@ turf_js = f"""
 
             
 
-                    
+            if (savedScore != "Suck") {{initMap()}}
+        
 
             if (savedScore === "Suck") {{
 
