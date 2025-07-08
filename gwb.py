@@ -332,7 +332,7 @@ turf_js = f"""
                     L.circleMarker([lat, lng], {{
                         radius: 3,
                         color: 'black',
-                        weight: 0.3,
+                        weight: 1,
                         fillColor: 'red',
                         fillOpacity: 1,
                         className: 'guess-dot'
@@ -476,7 +476,7 @@ turf_js = f"""
                             L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                                 radius: 3,
                                 color: 'black',
-                                weight: 0.3,
+                                weight: 1,
                                 fillColor: 'red',
                                 fillOpacity: 1
                             }}).addTo({map_var});       
