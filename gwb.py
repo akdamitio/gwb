@@ -166,8 +166,8 @@ css = f"""
 
     .x-marker {{
         color: red;
-        font-size: 30px;
-        line-height: 30px;
+        font-size: 20px;
+        line-height: 20px;
         text-align: center;
         pointer-events: none;
         cursor: crosshair !important;
@@ -177,7 +177,7 @@ css = f"""
 
     }}
     .x-marker::before {{
-        content: "×";        
+        content: "⨉";        
     }}    
 
     .plus-marker {{
@@ -889,8 +889,8 @@ turf_js = f"""
                     L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                         icon: L.divIcon({{
                             className: 'x-marker',
-                            iconSize: [30, 30],
-                            iconAnchor: [15,15]
+                            iconSize: [20, 20],
+                            iconAnchor: [10,10]
 
                         }})
                     }}).addTo({map_var});
@@ -1043,8 +1043,8 @@ turf_js = f"""
                             L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                                 icon: L.divIcon({{
                                     className: 'x-marker',
-                                    iconSize: [30, 30],
-                                    iconAnchor: [15,15]
+                                    iconSize: [20, 20],
+                                    iconAnchor: [10,10]
         
                                 }})
                             }}).addTo({map_var});
