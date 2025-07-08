@@ -331,8 +331,8 @@ turf_js = f"""
                 for (const [lat, lng] of stored) {{
                     L.circleMarker([lat, lng], {{
                         radius: 3,
-                        color: 'red',
-                        weight: 0,
+                        color: 'black',
+                        weight: 0.3,
                         fillColor: 'red',
                         fillOpacity: 1,
                         className: 'guess-dot'
