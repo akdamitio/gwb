@@ -323,9 +323,9 @@ turf_js = f"""
         
         //MASKING \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-        let maskLayer;
-        let holes = [];
-        let holeId = 0;
+        var maskLayer;
+        var holes = [];
+        var holeId = 0;
         var maskPane = {map_var}.createPane("mPane");
 
         maskPane.style.zIndex = 0;
