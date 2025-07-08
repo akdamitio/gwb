@@ -334,7 +334,7 @@ turf_js = f"""
             mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: "mPane", keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
 
             // Assuming 'map' is your Leaflet map instance
-            {map_var}.on(baseLayer, function () {{
+            {map_var}.on('zoomstart movestart', function () {{
                 document.querySelector('mPane').style.visibility = 'hidden';
             }});
 
@@ -369,11 +369,11 @@ turf_js = f"""
             
             // Create a large rectangle covering the entire view
             const outerRing = [
-                [90 + 1, 180 + 1],
-                [90 + 1, -180 - 1],
-                [-90 - 1, -180 - 1],
-                [-90 - 1, 180 + 1],
-                [90 + 1, 180 + 1]
+                [ne.lat + 1, ne.lng + 1],
+                [ne.lat + 1, sw.lng - 1],
+                [sw.lat - 1, sw.lng - 1],
+                [sw.lat - 1, ne.lng + 1],
+                [ne.lat + 1, ne.lng + 1]
             ];
             
             // Create holes (inner rings) for each specified location
