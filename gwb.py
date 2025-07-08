@@ -869,7 +869,7 @@ turf_js = f"""
 
             if (savedScore === "Suck") {{
 
-                mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: "mPane", keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
+                mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true}}).addTo({map_var})        
 
 
                 totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
