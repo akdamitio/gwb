@@ -895,7 +895,7 @@ turf_js = f"""
             const reloadGuesses = () => {{
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
-                    L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
+                    L.marker([lng, lat], {{
                         icon: L.divIcon({{
                             className: 'x-marker',
                             iconSize: [20, 20],
