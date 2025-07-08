@@ -333,6 +333,14 @@ turf_js = f"""
             // Add base tile layer
             mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: "mPane", keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
 
+            // Assuming 'map' is your Leaflet map instance
+            {map_var}.on('zoomstart movestart', function () {
+                document.querySelector('.leaflet-tile-pane').style.visibility = 'hidden';
+            });
+
+            {map_var}.on('zoomend moveend', function () {
+                document.querySelector('.leaflet-tile-pane').style.visibility = 'visible';
+            });            
             
             // Create initial mask
             createMask();
@@ -369,9 +377,12 @@ turf_js = f"""
             ];
             
             // Create holes (inner rings) for each specified location
-            const innerRings = holes.map(hole => {{
+            var innerRings = holes.map(hole => {{
                 return createCircleCoordinates(hole.lat, hole.lng, hole.radius);
             }});
+
+            innerRings = condenseInnerRings(innerRings);
+
             
             // Create polygon with holes
             const maskPolygon = L.polygon([outerRing, ...innerRings], {{
@@ -445,7 +456,351 @@ turf_js = f"""
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        // Function to check if a point is inside a polygon using ray casting algorithm
+        function pointInPolygon(point, polygon) {{
+            const [x, y] = point;
+            let inside = false;
+            
+            for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {{
+                const [xi, yi] = polygon[i];
+                const [xj, yj] = polygon[j];
+                
+                if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {{
+                    inside = !inside;
+                }}
+            }}
+            
+            return inside;
+        }}
 
+        // Function to check if two line segments intersect
+        function segmentsIntersect(p1, p2, p3, p4) {{
+            const [x1, y1] = p1;
+            const [x2, y2] = p2;
+            const [x3, y3] = p3;
+            const [x4, y4] = p4;
+            
+            const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+            if (Math.abs(denom) < 1e-10) return false; // Parallel lines
+            
+            const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+            const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
+            
+            return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+        }}
+
+        // Function to check if two polygons intersect
+        function polygonsIntersect(poly1, poly2) {{
+            // Check if any vertex of poly1 is inside poly2
+            for (const point of poly1) {{
+                if (pointInPolygon(point, poly2)) return true;
+            }}
+            
+            // Check if any vertex of poly2 is inside poly1
+            for (const point of poly2) {{
+                if (pointInPolygon(point, poly1)) return true;
+            }}
+            
+            // Check if any edges intersect
+            for (let i = 0; i < poly1.length; i++) {{
+                const p1 = poly1[i];
+                const p2 = poly1[(i + 1) % poly1.length];
+                
+                for (let j = 0; j < poly2.length; j++) {{
+                    const p3 = poly2[j];
+                    const p4 = poly2[(j + 1) % poly2.length];
+                    
+                    if (segmentsIntersect(p1, p2, p3, p4)) return true;
+                }}
+            }}
+            
+            return false;
+        }}
+
+        // Sutherland-Hodgman polygon clipping for union with concavity support
+        function polygonUnion(poly1, poly2) {{
+            // Helper function to check if point is inside edge (left side)
+            function isInside(point, edge) {{
+                const [x, y] = point;
+                const [x1, y1] = edge[0];
+                const [x2, y2] = edge[1];
+                return (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1) >= 0;
+            }}
+            
+            // Helper function to compute intersection of line segments
+            function getIntersection(p1, p2, edge) {{
+                const [x1, y1] = p1;
+                const [x2, y2] = p2;
+                const [x3, y3] = edge[0];
+                const [x4, y4] = edge[1];
+                
+                const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+                if (Math.abs(denom) < 1e-10) return null;
+                
+                const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+                return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+            }}
+            
+            // Minkowski sum approach for better union handling
+            function minkowskiSum(poly1, poly2) {{
+                const result = [];
+                
+                // Get all vertices from both polygons
+                const allVertices = [...poly1, ...poly2];
+                
+                // Remove duplicates
+                const uniqueVertices = [];
+                for (const vertex of allVertices) {{
+                    const isDuplicate = uniqueVertices.some(v => 
+                        Math.abs(v[0] - vertex[0]) < 1e-10 && Math.abs(v[1] - vertex[1]) < 1e-10
+                    );
+                    if (!isDuplicate) {{
+                        uniqueVertices.push(vertex);
+                    }}
+                }}
+                
+                // Find the boundary of the union using a modified convex hull approach
+                // but keeping concave parts when they don't create holes
+                
+                // Sort points by angle from centroid
+                const centroid = uniqueVertices.reduce(
+                    (acc, vertex) => [acc[0] + vertex[0], acc[1] + vertex[1]], 
+                    [0, 0]
+                );
+                centroid[0] /= uniqueVertices.length;
+                centroid[1] /= uniqueVertices.length;
+                
+                uniqueVertices.sort((a, b) => {{
+                    const angleA = Math.atan2(a[1] - centroid[1], a[0] - centroid[0]);
+                    const angleB = Math.atan2(b[1] - centroid[1], b[0] - centroid[0]);
+                    return angleA - angleB;
+                }});
+                
+                // Build the union boundary by checking if each point should be included
+                const unionBoundary = [];
+                
+                for (let i = 0; i < uniqueVertices.length; i++) {{
+                    const currentPoint = uniqueVertices[i];
+                    const nextPoint = uniqueVertices[(i + 1) % uniqueVertices.length];
+                    
+                    // Check if this edge is on the boundary of the union
+                    const midpoint = [
+                        (currentPoint[0] + nextPoint[0]) / 2,
+                        (currentPoint[1] + nextPoint[1]) / 2
+                    ];
+                    
+                    // If midpoint is inside either polygon, this edge is internal
+                    const insidePoly1 = pointInPolygon(midpoint, poly1);
+                    const insidePoly2 = pointInPolygon(midpoint, poly2);
+                    
+                    // Add point if it's on the boundary of the union
+                    if (!insidePoly1 || !insidePoly2) {{
+                        unionBoundary.push(currentPoint);
+                    }}
+                }}
+                
+                return unionBoundary.length > 0 ? unionBoundary : uniqueVertices;
+            }}
+            
+            // Use alpha shapes for better concave union
+            function alphaShape(points, alpha = 1.0) {{
+                if (points.length < 3) return points;
+                
+                // Delaunay triangulation approximation using a simple approach
+                const triangles = [];
+                
+                // Find boundary points using alpha parameter
+                const boundaryPoints = [];
+                
+                // Sort points by angle from centroid
+                const centroid = points.reduce(
+                    (acc, point) => [acc[0] + point[0], acc[1] + point[1]], 
+                    [0, 0]
+                );
+                centroid[0] /= points.length;
+                centroid[1] /= points.length;
+                
+                // Group points by distance from centroid
+                const sortedPoints = [...points].sort((a, b) => {{
+                    const distA = Math.sqrt((a[0] - centroid[0]) ** 2 + (a[1] - centroid[1]) ** 2);
+                    const distB = Math.sqrt((b[0] - centroid[0]) ** 2 + (b[1] - centroid[1]) ** 2);
+                    return distA - distB;
+                }});
+                
+                // Use gift wrapping algorithm for concave hull
+                function giftWrapping(points) {{
+                    if (points.length < 3) return points;
+                    
+                    // Find the leftmost point
+                    let leftmost = 0;
+                    for (let i = 1; i < points.length; i++) {{
+                        if (points[i][0] < points[leftmost][0]) {{
+                            leftmost = i;
+                        }}
+                    }}
+                    
+                    const hull = [];
+                    let current = leftmost;
+                    
+                    do {{
+                        hull.push(points[current]);
+                        let next = (current + 1) % points.length;
+                        
+                        for (let i = 0; i < points.length; i++) {{
+                            const cross = (points[next][0] - points[current][0]) * (points[i][1] - points[current][1]) - 
+                                        (points[next][1] - points[current][1]) * (points[i][0] - points[current][0]);
+                            
+                            if (cross < 0 || (cross === 0 && 
+                                Math.sqrt((points[i][0] - points[current][0]) ** 2 + (points[i][1] - points[current][1]) ** 2) >
+                                Math.sqrt((points[next][0] - points[current][0]) ** 2 + (points[next][1] - points[current][1]) ** 2))) {{
+                                next = i;
+                            }}
+                        }}
+                        
+                        current = next;
+                    }} while (current !== leftmost);
+                    
+                    return hull;
+                }}
+                
+                return giftWrapping(points);
+            }}
+            
+            // Combine all points and create union
+            const allPoints = [...poly1, ...poly2];
+            
+            // Remove points that are strictly inside the other polygon
+            const filteredPoints = allPoints.filter(point => {{
+                const inPoly1 = pointInPolygon(point, poly1);
+                const inPoly2 = pointInPolygon(point, poly2);
+                
+                // Keep points that are on the boundary or outside
+                return !inPoly1 || !inPoly2 || 
+                    poly1.some(p => Math.abs(p[0] - point[0]) < 1e-10 && Math.abs(p[1] - point[1]) < 1e-10) ||
+                    poly2.some(p => Math.abs(p[0] - point[0]) < 1e-10 && Math.abs(p[1] - point[1]) < 1e-10);
+            }});
+            
+            // Add intersection points
+            const intersectionPoints = [];
+            for (let i = 0; i < poly1.length; i++) {{
+                const p1 = poly1[i];
+                const p2 = poly1[(i + 1) % poly1.length];
+                
+                for (let j = 0; j < poly2.length; j++) {{
+                    const p3 = poly2[j];
+                    const p4 = poly2[(j + 1) % poly2.length];
+                    
+                    if (segmentsIntersect(p1, p2, p3, p4)) {{
+                        const intersection = getIntersection(p1, p2, [p3, p4]);
+                        if (intersection) {{
+                            intersectionPoints.push(intersection);
+                        }}
+                    }}
+                }}
+            }}
+            
+            const allUnionPoints = [...filteredPoints, ...intersectionPoints];
+            
+            // Use alpha shape for concave union
+            return alphaShape(allUnionPoints, 0.5);
+        }}
+
+        // Main function to condense innerRings by combining intersecting polygons
+        function condenseInnerRings(innerRings) {{
+            if (innerRings.length <= 1) return innerRings;
+            
+            // Create a copy to work with
+            const condensedRings = [...innerRings];
+            
+            let hasChanges = true;
+            while (hasChanges) {{
+                hasChanges = false;
+                
+                // Compare each pair of polygons
+                for (let i = 0; i < condensedRings.length && !hasChanges; i++) {{
+                    for (let j = i + 1; j < condensedRings.length && !hasChanges; j++) {{
+                        if (polygonsIntersect(condensedRings[i], condensedRings[j])) {{
+                            // Found intersection, compute union with concavity support
+                            const union = polygonUnion(condensedRings[i], condensedRings[j]);
+                            
+                            // Replace the first polygon with the union
+                            condensedRings[i] = union;
+                            
+                            // Remove the second polygon
+                            condensedRings.splice(j, 1);
+                            
+                            hasChanges = true;
+                        }}
+                    }}
+                }}
+            }}
+            
+            return condensedRings;
+        }}
+
+        // Alternative version that works with Union-Find for better performance with many polygons
+        function condenseInnerRingsOptimized(innerRings) {{
+            if (innerRings.length <= 1) return innerRings;
+            
+            const n = innerRings.length;
+            const parent = Array.from({{ length: n }}, (_, i) => i);
+            
+            // Union-Find functions
+            function find(x) {{
+                if (parent[x] !== x) {{
+                    parent[x] = find(parent[x]);
+                }}
+                return parent[x];
+            }}
+            
+            function union(x, y) {{
+                const px = find(x);
+                const py = find(y);
+                if (px !== py) {{
+                    parent[px] = py;
+                }}
+            }}
+            
+            // Find all intersecting pairs
+            for (let i = 0; i < n; i++) {{
+                for (let j = i + 1; j < n; j++) {{
+                    if (polygonsIntersect(innerRings[i], innerRings[j])) {{
+                        union(i, j);
+                    }}
+                }}
+            }}
+            
+            // Group polygons by their root parent
+            const groups = {{}};
+            for (let i = 0; i < n; i++) {{
+                const root = find(i);
+                if (!groups[root]) {{
+                    groups[root] = [];
+                }}
+                groups[root].push(i);
+            }}
+            
+            // Compute union for each group
+            const result = [];
+            for (const group of Object.values(groups)) {{
+                if (group.length === 1) {{
+                    // Single polygon, no union needed
+                    result.push(innerRings[group[0]]);
+                }} else {{
+                    // Multiple polygons, compute union with concavity support
+                    let unionPolygon = innerRings[group[0]];
+                    for (let i = 1; i < group.length; i++) {{
+                        unionPolygon = polygonUnion(unionPolygon, innerRings[group[i]]);
+                    }}
+                    result.push(unionPolygon);
+                }}
+            }}
+            
+            return result;
+        }}
+        
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         const saveGuess = (lat, lng) => {{
             const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
