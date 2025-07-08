@@ -833,6 +833,8 @@ turf_js = f"""
 
         {map_var}.whenReady(function() {{
 
+            initMap()
+
 
 
             const plusIcon = L.divIcon({{
