@@ -475,7 +475,8 @@ turf_js = f"""
                             // Add marker at clicked location
                             L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
                                 radius: 3,
-                                color: 'red',
+                                color: 'black',
+                                weight: 0.3,
                                 fillColor: 'red',
                                 fillOpacity: 1
                             }}).addTo({map_var});       
