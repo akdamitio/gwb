@@ -333,20 +333,19 @@ turf_js = f"""
             // Add base tile layer
             mapLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}',{{attribution: 'Tiles © Esri', detectRetina: true, pane: "mPane", keepBuffer: 0, updateWhenZooming: false, updateWhenPanning: false}}).addTo({map_var})        
 
-            // Assuming 'map' is your Leaflet map instance
             {map_var}.on('zoomstart movestart', function () {{
-                document.querySelector('.leaflet-tile-pane').style.visibility = 'hidden';
+                mapLayer.setOpacity(0); // Hide by making transparent
             }});
-
+            
             {map_var}.on('zoomend moveend', function () {{
-                document.querySelector('.leaflet-tile-pane').style.visibility = 'visible';
-            }});            
+                mapLayer.setOpacity(1); // Show by restoring opacity
+            }});        
             
             // Create initial mask
             createMask();
             
             // Update mask when map moves or zooms
-            {map_var}.on('zoomstart movestart', updateMask);
+            {map_var}.on('zoomend moveend', updateMask);
 
 
         }}
