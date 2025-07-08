@@ -335,11 +335,11 @@ turf_js = f"""
 
             // Assuming 'map' is your Leaflet map instance
             {map_var}.on('zoomstart movestart', function () {{
-                document.querySelector(('.leaflet-tile-pane').style.visibility = 'hidden';
+                document.querySelector('.leaflet-tile-pane').style.visibility = 'hidden';
             }});
 
             {map_var}.on('zoomend moveend', function () {{
-                document.querySelector(('.leaflet-tile-pane').style.visibility = 'visible';
+                document.querySelector('.leaflet-tile-pane').style.visibility = 'visible';
             }});            
             
             // Create initial mask
