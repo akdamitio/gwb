@@ -380,13 +380,14 @@ turf_js = f"""
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
 
+            let maskLayer;
+            let holes = [];
+            let holeId = 0;
+            var maskPane = {map_var}.createPane("mPane");
 
             if (savedScore != "Suck"){{
                 //MASKING \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                let maskLayer;
-                let holes = [];
-                let holeId = 0;
-                var maskPane = {map_var}.createPane("mPane");
+
         
                 maskPane.style.zIndex = 0;
         
