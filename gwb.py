@@ -479,7 +479,7 @@ turf_js = f"""
                                 radius: 3,
                                 color: 'black',
                                 weight: 1,
-                                fillColor: 'red',
+                                fillColor: colors[guessCount-1],
                                 fillOpacity: 1
                             }}).addTo({map_var});       
 
