@@ -895,17 +895,20 @@ turf_js = f"""
 
 
 
+            var c = 0
+            var colors = ['red', '#FF6600', 'yellow', 'green', '#3366FF', 'purple']
             const reloadGuesses = () => {{
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
-                    L.marker([lat, lng], {{
-                        icon: L.divIcon({{
-                            className: 'x-marker',
-                            iconSize: [20, 20],
-                            iconAnchor: [10,10]
-
-                        }})
+                    L.circleMarker([lat, lng], {{
+                        radius: 3,
+                        color: 'black',
+                        weight: 1,
+                        fillColor: colors[c],
+                        fillOpacity: 1,
+                        className: 'guess-dot'
                     }}).addTo({map_var});
+                    c = c+1
                 }}
             }};
             reloadGuesses();
@@ -1052,14 +1055,13 @@ turf_js = f"""
                             addHole(pt, radius);    
                             
                             // Add marker at clicked location
-                            L.marker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
-                                icon: L.divIcon({{
-                                    className: 'x-marker',
-                                    iconSize: [20, 20],
-                                    iconAnchor: [10,10]
-        
-                                }})
-                            }}).addTo({map_var});
+                            L.circleMarker([pt.geometry.coordinates[1], pt.geometry.coordinates[0]], {{
+                                radius: 3,
+                                color: 'black',
+                                weight: 1,
+                                fillColor: colors[guessCount-1],
+                                fillOpacity: 1
+                            }}).addTo({map_var});  
 
                            
 
