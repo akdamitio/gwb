@@ -231,7 +231,7 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
 
-
+        var totalDistance
         
         function showLosePopup() {{
             const popup = document.createElement('div');
