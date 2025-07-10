@@ -280,7 +280,7 @@ turf_js = f"""
 
 (function() {{
     var gameOver = false;
-    //localStorage.clear()
+    localStorage.clear()
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
