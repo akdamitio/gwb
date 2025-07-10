@@ -326,7 +326,7 @@ turf_js = f"""
 
 
             var c = 0
-            var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+            var colors = ['red', 'darkorange', 'yellow', 'green', 'lightblue', 'purple']
             const reloadGuesses = () => {{
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
