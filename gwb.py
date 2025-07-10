@@ -325,6 +325,8 @@ turf_js = f"""
 
         var maskLayer;
         var holes = [];
+        holes = localStorage.getItem('holes')
+
         var holeId = 0;
         var maskPane = {map_var}.createPane("mPane");
 
@@ -450,6 +452,7 @@ turf_js = f"""
             }};
             
             holes.push(hole);
+            localStorage.setItem('holes', holes)
 
             updateMask();
 
@@ -891,7 +894,6 @@ turf_js = f"""
 
 
             }}
-
 
 
 
