@@ -231,11 +231,7 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
 
-        if (localStorage.getItem(playedKey + "_totalDistance") != null) {{
-            var totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"))
-        }} else{{
-            var totalDistance = 0;
-        }};
+
         
         function showLosePopup() {{
             const popup = document.createElement('div');
@@ -308,6 +304,12 @@ turf_js = f"""
             const savedScore = localStorage.getItem(playedKey + "_score");
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
+
+            if (localStorage.getItem(playedKey + "_totalDistance") != null) {{
+                var totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"))
+            }} else{{
+                var totalDistance = 0;
+            }};            
 
 
             if (savedScore === "Suck") {{
