@@ -325,7 +325,8 @@ turf_js = f"""
 
 
 
-
+            var c = 0
+            var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
             const reloadGuesses = () => {{
                 const stored = JSON.parse(localStorage.getItem('guesses') || '[]');
                 for (const [lat, lng] of stored) {{
@@ -333,10 +334,11 @@ turf_js = f"""
                         radius: 3,
                         color: 'black',
                         weight: 1,
-                        fillColor: 'red',
+                        fillColor: colors[c],
                         fillOpacity: 1,
                         className: 'guess-dot'
                     }}).addTo({map_var});
+                    c = c+1
                 }}
             }};
             reloadGuesses();
