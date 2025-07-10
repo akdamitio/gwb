@@ -324,8 +324,11 @@ turf_js = f"""
         //MASKING \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
         var maskLayer;
-        var holes = [];
-        holes = localStorage.getItem('holes')
+        if (localStorage.getItem('holes') != null) {{
+            var holes = localStorage.getItem('holes')
+        }} else{{
+            var holes = [];
+        }};
 
         var holeId = 0;
         var maskPane = {map_var}.createPane("mPane");
