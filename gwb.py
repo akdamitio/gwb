@@ -208,7 +208,7 @@ map_var = m.get_name()
 turf_js = f"""
 (function() {{
     var gameOver = false;
-    //localStorage.clear()
+    localStorage.clear()
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -231,7 +231,24 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
 
-        var totalDistance
+
+        // LocalStorage key
+
+        const playedKey = "hasGuessed_" + new Date().toISOString().slice(0,10);
+
+        let locked = false;
+        const played = localStorage.getItem(playedKey);
+        var tapCount = 0;
+        const savedScore = localStorage.getItem(playedKey + "_score");
+
+        if (localStorage.getItem(playedKey + "_totalDistance") != null) {{
+            var totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"))
+        }} else{{
+            var totalDistance = 0;
+        }};    
+
+        console.log(totalDistance)
+        
         
         function showLosePopup() {{
             const popup = document.createElement('div');
@@ -294,26 +311,14 @@ turf_js = f"""
 
 
         
-            // LocalStorage key
 
-            const playedKey = "hasGuessed_" + new Date().toISOString().slice(0,10);
-
-            let locked = false;
-            const played = localStorage.getItem(playedKey);
-            var tapCount = 0;
-            const savedScore = localStorage.getItem(playedKey + "_score");
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
 
-            if (localStorage.getItem(playedKey + "_totalDistance") != null) {{
-                var totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"))
-            }} else{{
-                var totalDistance = 0;
-            }};            
+        
 
 
             if (savedScore === "Suck") {{
-                totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"));
 
 
                 updateBanner("✅ You already played today. | Guesses: " + savedScore);
