@@ -329,7 +329,7 @@ turf_js = f"""
         }} else{{
             var holes = [];
         }};
-        console.log(holes);
+        console.log(holes[0]);
 
         var holeId = 0;
         var maskPane = {map_var}.createPane("mPane");
