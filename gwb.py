@@ -325,7 +325,7 @@ turf_js = f"""
 
         var maskLayer;
         if (localStorage.getItem('holes') != null) {{
-            var holes = localStorage.getItem('holes')
+            var holes = JSON.parse(localStorage.getItem('holes') || '[]');
         }} else{{
             var holes = [];
         }};
@@ -456,7 +456,7 @@ turf_js = f"""
             }};
             
             holes.push(hole);
-            localStorage.setItem('holes', holes)
+            localStorage.setItem('holes', JSON.stringify(holes))
 
             updateMask();
 
