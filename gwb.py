@@ -411,6 +411,19 @@ turf_js = f"""
                     if (border.type === "FeatureCollection") {{
                         console.log("a");
                         border.features.forEach(f => {{
+                            if (f === "MultiLineString") {{
+                                console.log("b");
+    
+    
+                                border.geometry.coordinates.forEach(g => {{
+                                    console.log(g);
+                                    const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
+                                    if (dist < distanceToBorder) {{
+                                        distanceToBorder = dist;
+                                    }}
+                                }});
+                            }} else {{
+                            
                             const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
                             if (dist < distanceToBorder) {{
                                 distanceToBorder = dist;
