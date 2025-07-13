@@ -428,7 +428,7 @@ turf_js = f"""
                                 if (dist < distanceToBorder) {{
                                     distanceToBorder = dist;
                                 }}
-                            }});
+                            }};
                         console.log(distanceToBorder);
                     }}else{{
 
