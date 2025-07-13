@@ -414,8 +414,7 @@ turf_js = f"""
                             if (f === "MultiLineString") {{
                                 console.log("b");
     
-    
-                                border.geometry.coordinates.forEach(g => {{
+                                f.geometry.coordinates.forEach(g => {{
                                     console.log(g);
                                     const dist = turf.pointToLineDistance(pt, g, {{ units: "miles" }});
                                     if (dist < distanceToBorder) {{
@@ -429,8 +428,9 @@ turf_js = f"""
                                     distanceToBorder = dist;
                                 }}
                             }};
+                        }});
                         console.log(distanceToBorder);
-                    }}else{{
+                    }} else{{
 
                         if (border.geometry.type === "MultiLineString") {{
                             console.log("b");
