@@ -424,11 +424,11 @@ turf_js = f"""
                                 }});
                             }} else {{
                             
-                            const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
-                            if (dist < distanceToBorder) {{
-                                distanceToBorder = dist;
-                            }}
-                        }});
+                                const dist = turf.pointToLineDistance(pt, f, {{ units: "miles" }});
+                                if (dist < distanceToBorder) {{
+                                    distanceToBorder = dist;
+                                }}
+                            }});
                         console.log(distanceToBorder);
                     }}else{{
 
