@@ -411,7 +411,7 @@ turf_js = f"""
                     if (border.type === "FeatureCollection") {{
                         console.log("a");
                         border.features.forEach(f => {{
-                            if (f === "MultiLineString") {{
+                            if (f.geometry.type === "MultiLineString") {{
                                 console.log("b");
     
                                 f.geometry.coordinates.forEach(g => {{
