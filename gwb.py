@@ -303,7 +303,7 @@ turf_js = f"""
         let border;
         border = turf.polygonToLine(countryGeoJSON);
         var ct = turf.centroid(countryGeoJSON);
-        //console.log(ct);
+        console.log(ct);
 
         if (localStorage.getItem(playedKey + "_totalDistance") != null) {{
             var totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"))
@@ -1086,6 +1086,7 @@ turf_js = f"""
                                 countryLayer = L.geoJSON(countryGeoJSON, {{
                                     style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
                                 }}).addTo({map_var});
+                                {map_var}.flyTo(ct, zoom=1.5);
                                 updateBanner("6 tries is enough. You lose.");
                                 gameOver = true;
                                 locked = true;
