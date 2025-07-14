@@ -175,6 +175,8 @@ turf_js = f"""
 (function() {{
     var gameOver = false;
 
+    console.log(centroid);
+
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
     const storedDate = localStorage.getItem("lastPlayedDate");
