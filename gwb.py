@@ -164,8 +164,7 @@ m.get_root().html.add_child(Element(css))
 
 
 # GeoJSON geometry
-centroid = json.loads(selected['centroid'].to_json())
-centroid = json.dumps(centroid)
+
 geojson_geom = json.loads(gpd.GeoSeries([selected_geom]).to_json())['features'][0]['geometry']
 geojson_str = json.dumps(geojson_geom)
 
