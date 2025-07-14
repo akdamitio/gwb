@@ -325,6 +325,7 @@ turf_js = f"""
                                 countryLayer = L.geoJSON(countryGeoJSON, {{
                                     style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
                                 }}).addTo({map_var});
+                                {mpa_var}.fitBounds(shape.getBounds());
                                 updateBanner("6 tries is enough. You lose.");
                                 gameOver = true;
                                 locked = true;
