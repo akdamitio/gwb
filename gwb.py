@@ -210,7 +210,7 @@ turf_js = f"""
         }};
 
         var ct = turf.centroid(countryGeoJSON);
-        console.log(ct);
+        console.log(ct.geometry.coordinates);
 
         const markers = document.getElementsByClassName("plus-marker");
 
@@ -332,7 +332,7 @@ turf_js = f"""
                                 countryLayer = L.geoJSON(countryGeoJSON, {{
                                     style: {{ color: 'red', weight: 3, fillOpacity: 0.3 }}
                                 }}).addTo({map_var});
-                                {map_var}.flyTo(ct.geometry.coordinates, zoom=1.5);
+                                {map_var}.flyTo(ct.geometry.coordinates, zoom=8);
                                 updateBanner("6 tries is enough. You lose.");
                                 gameOver = true;
                                 locked = true;
