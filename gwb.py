@@ -302,6 +302,8 @@ turf_js = f"""
 
         let border;
         border = turf.polygonToLine(countryGeoJSON);
+        var ct = turf.centroid(countryGeoJSON);
+        console.log(ct);
 
         if (localStorage.getItem(playedKey + "_totalDistance") != null) {{
             var totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"))
