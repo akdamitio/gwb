@@ -174,7 +174,8 @@ turf_js = f"""
 (function() {{
     var gameOver = false;
 
-    console.log(centroid);
+
+
 
 
     const today = new Date().toISOString().split('T')[0];  // "2025-06-08"
@@ -207,6 +208,9 @@ turf_js = f"""
                 popup.style.opacity = 0;
             }}, 3000);
         }};
+
+        var ct = turf.centroid(countryGeoJSON);
+        console.log(ct);
 
         const markers = document.getElementsByClassName("plus-marker");
 
