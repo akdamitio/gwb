@@ -305,6 +305,15 @@ turf_js = f"""
         var ct = turf.centroid(countryGeoJSON);
         console.log(ct);
 
+        // LocalStorage key
+
+        const playedKey = "hasGuessed_" + new Date().toISOString().slice(0,10);
+
+        let locked = false;
+        const played = localStorage.getItem(playedKey);
+        var tapCount = 0;
+        const savedScore = localStorage.getItem(playedKey + "_score");
+
         if (localStorage.getItem(playedKey + "_totalDistance") != null) {{
             var totalDistance = Number(localStorage.getItem(playedKey + "_totalDistance"))
         }} else{{
@@ -865,14 +874,7 @@ turf_js = f"""
 
 
         
-            // LocalStorage key
 
-            const playedKey = "hasGuessed_" + new Date().toISOString().slice(0,10);
-
-            let locked = false;
-            const played = localStorage.getItem(playedKey);
-            var tapCount = 0;
-            const savedScore = localStorage.getItem(playedKey + "_score");
             
             guessCount = Number(localStorage.getItem(playedKey + "_guesses"));
 
