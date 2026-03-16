@@ -548,6 +548,6 @@ from streamlit.components.v1 import html as st_html
 html_string = m.get_root().render()
 html_string = html_string.encode('utf-8', 'replace').decode('utf-8')
 #st_html(html_string, height=700, scrolling=True)
-st_html(m.get_root().render(), height='100%', scrolling=False)
+st_html(m.get_root().render(), height=800, scrolling=False)
 
 
