@@ -65,7 +65,8 @@ m = folium.Map(
     zoom_start=1,
     tiles=None,
     zoom_control=True,
-    prefer_canvas=True
+    prefer_canvas=True,
+    height=80vh
 )
 
 
